@@ -7,6 +7,9 @@
 #define QFPC_IMPLEMENTATION
 #include "qfpc.h"
 
+#define STR(x) #x
+#define countof(x) (sizeof(x) / sizeof((x)[0]))
+
 #define MAX_STR 5000
 
 typedef struct

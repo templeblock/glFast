@@ -1,6 +1,9 @@
 #define GLFAST_IMPLEMENTATION
 #include "../../glfast.h"
 
+#define STR(x) #x
+#define countof(x) (sizeof(x) / sizeof((x)[0]))
+
 i32 main()
 {
   SDL_Window  * sdl_window;

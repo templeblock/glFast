@@ -50,18 +50,6 @@ typedef uint16_t f16;
 typedef float    f32;
 typedef double   d64;
 
-#ifndef cast
-#define cast
-#endif
-
-#ifndef STR
-#define STR(x) #x
-#endif
-
-#ifndef countof
-#define countof(x) (sizeof(x) / sizeof((x)[0]))
-#endif
-
 // OPENGL //////////////////////////////////////////////////////////////////////
 
 #define GL_TRUE 1
@@ -555,7 +543,7 @@ void gfTextureSaveToBmp(
   const char * bmp_filepath)
 {
   i32  pixels_bytes = width * height * 3;
-  u8 * pixels = SDL_malloc(cast(u32)pixels_bytes);
+  u8 * pixels = SDL_malloc((u32)pixels_bytes);
   
   gfTextureGetPixels(texture_id, texture_layer, 0, 0, width, height, GL_BGR, pixels_bytes, pixels);
   
@@ -623,7 +611,7 @@ u32 gfProgramCreateFromFile(
   SDL_RWops * fd = SDL_RWFromFile(shader_filepath, "rb");
   if(fd == NULL) gfErrorAndQuit("Error: File not found", shader_filepath);
   SDL_RWseek(fd, 0, RW_SEEK_END);
-  u32 bytes = cast(u32)SDL_RWtell(fd);
+  u32 bytes = (u32)SDL_RWtell(fd);
   SDL_RWseek(fd, 0, RW_SEEK_SET);
   char src[bytes + 1];
   src[bytes] = 0;
@@ -631,14 +619,14 @@ u32 gfProgramCreateFromFile(
   SDL_RWclose(fd);
   char * shader_string = &src[0];
   
-  return glCreateShaderProgramv(shader_type, 1, cast(const char **)&shader_string);
+  return glCreateShaderProgramv(shader_type, 1, (const char **)&shader_string);
 }
 
 u32 gfProgramCreateFromString(
   u32 shader_type,
   const char * shader_string)
 {
-  return glCreateShaderProgramv(shader_type, 1, cast(const char **)&shader_string);
+  return glCreateShaderProgramv(shader_type, 1, (const char **)&shader_string);
 }
 
 u32 gfProgramPipelineCreate(
@@ -664,7 +652,7 @@ void gfDraw(
   for(u32 i = 0; i < gpu_cmd_count; ++i)
   {
     gpu_cmd_t cmd = gpu_cmd[i];
-    glDrawArraysInstancedBaseInstance(GL_TRIANGLES, cast(i32)cmd.first, cast(i32)cmd.count, cast(i32)cmd.instance_count, cmd.instance_first);
+    glDrawArraysInstancedBaseInstance(GL_TRIANGLES, (i32)cmd.first, (i32)cmd.count, (i32)cmd.instance_count, cmd.instance_first);
   }
   
   glBindProgramPipeline(0);
@@ -801,7 +789,7 @@ void gfWindow(
     "GL_ARB_texture_buffer_object_rgb32"
   };
   
-  gfCheckExtensions(countof(extensions), extensions);
+  gfCheckExtensions(sizeof(extensions) / sizeof(extensions[0]), extensions);
 
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wpedantic"
@@ -853,7 +841,7 @@ void gfWindow(
   #ifndef RELEASE
   typedef void (*GLDEBUGPROC)(u32 source, u32 type, u32 id, u32 severity, i32 length, const char * message, const void * userParam);
   void (*glDebugMessageCallback)(GLDEBUGPROC callback, const void * userParam) = SDL_GL_GetProcAddress("glDebugMessageCallback");
-  glDebugMessageCallback(cast(GLDEBUGPROC)gfDebugCallback, NULL);
+  glDebugMessageCallback((GLDEBUGPROC)gfDebugCallback, NULL);
   #endif
   
   u32 vao;
