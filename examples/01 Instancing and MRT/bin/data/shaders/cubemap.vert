@@ -73,8 +73,7 @@ smooth out vec3 vs_position;
 void main()
 {
   vec3 mv = pos[gl_VertexID];
-  //mv -= cam_pos;
-  mv  = qrot(mv, qconj(cam_rot));
+  mv = qrot(mv, qconj(cam_rot));
   gl_Position = proj(mv, cam_prj);
   vs_position = pos[gl_VertexID];
 }
