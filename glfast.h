@@ -38,17 +38,49 @@ extern "C" {
 
 // COMMONS /////////////////////////////////////////////////////////////////////
 
-typedef int8_t   i8;
-typedef uint8_t  u8;
-typedef int16_t  i16;
-typedef uint16_t u16;
-typedef int32_t  i32;
-typedef uint32_t u32;
-typedef int64_t  i64;
-typedef uint64_t u64;
-typedef uint16_t f16;
-typedef float    f32;
-typedef double   d64;
+#ifndef i8
+#define i8 int8_t
+#endif
+
+#ifndef u8
+#define u8 uint8_t
+#endif
+
+#ifndef i16
+#define i16 int16_t
+#endif
+
+#ifndef u16
+#define u16 uint16_t
+#endif
+
+#ifndef i32
+#define i32 int32_t
+#endif
+
+#ifndef u32
+#define u32 uint32_t
+#endif
+
+#ifndef i64
+#define i64 int64_t
+#endif
+
+#ifndef u64
+#define u64 uint64_t
+#endif
+
+#ifndef f16
+#define f16 uint16_t
+#endif
+
+#ifndef f32
+#define f32 float
+#endif
+
+#ifndef d64
+#define d64 double
+#endif
 
 // OPENGL //////////////////////////////////////////////////////////////////////
 
