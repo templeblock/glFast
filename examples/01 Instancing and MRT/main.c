@@ -11,6 +11,27 @@
 
 typedef struct
 {
+  union { f32 x; f32 u; };
+  union { f32 y; f32 v; };
+} vec2;
+
+typedef struct
+{
+  union { f32 x; f32 r; };
+  union { f32 y; f32 g; };
+  union { f32 z; f32 b; };
+} vec3;
+
+typedef struct
+{
+  union { f32 x; f32 r; };
+  union { f32 y; f32 g; };
+  union { f32 z; f32 b; };
+  union { f32 w; f32 a; };
+} vec4;
+
+typedef struct
+{
   f32 sd_x, up_x, fw_x;
   f32 sd_y, up_y, fw_y;
   f32 sd_z, up_z, fw_z;
@@ -159,7 +180,11 @@ i32 main(i32 ArgCount, char ** Args)
     ins_first.as_u32[i] = cmd[i].instance_first;
   
   for(u32 i = 0, row = 10, space = 3; i < 90; ++i)
-    ins_pos.as_vec3[i] = (vec3){i*space-(i/row)*row*space,0,(i/row)*space};
+  {
+    ins_pos.as_vec3[i].x = i*space-(i/row)*row*space;
+    ins_pos.as_vec3[i].y = 0;
+    ins_pos.as_vec3[i].z = (i/row)*space;
+  }
 
   gpu_texture_t fbo_depth    = gfTextureCreate((gpu_texture_t){.w = 1280, .h = 720, .format = depth_b24});
   gpu_texture_t fbo_mesh_id  = gfTextureCreate((gpu_texture_t){.w = 1280, .h = 720, .format = rgb_b8});

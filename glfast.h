@@ -50,27 +50,6 @@ typedef uint16_t f16;
 typedef float    f32;
 typedef double   d64;
 
-typedef struct
-{
-  union { f32 x; f32 u; };
-  union { f32 y; f32 v; };
-} vec2;
-
-typedef struct
-{
-  union { f32 x; f32 r; };
-  union { f32 y; f32 g; };
-  union { f32 z; f32 b; };
-} vec3;
-
-typedef struct
-{
-  union { f32 x; f32 r; };
-  union { f32 y; f32 g; };
-  union { f32 z; f32 b; };
-  union { f32 w; f32 a; };
-} vec4;
-
 #ifndef cast
 #define cast
 #endif
@@ -301,9 +280,24 @@ typedef struct
     i32  * as_i32;
     u32  * as_u32;
     f32  * as_f32;
-    vec2 * as_vec2;
-    vec3 * as_vec3;
-    vec4 * as_vec4;
+    struct
+    {
+      union { f32 x; f32 u; };
+      union { f32 y; f32 v; };
+    } * as_vec2;
+    struct
+    {
+      union { f32 x; f32 r; };
+      union { f32 y; f32 g; };
+      union { f32 z; f32 b; };
+    } * as_vec3;
+    struct
+    {
+      union { f32 x; f32 r; };
+      union { f32 y; f32 g; };
+      union { f32 z; f32 b; };
+      union { f32 w; f32 a; };
+    } * as_vec4;
   };
   u32 bytes;
   u32 count;
