@@ -374,7 +374,7 @@ void gfDraw(u32 program_pipeline, u32 gpu_cmd_count, const gpu_cmd_t * gpu_cmd);
 void gfDebugCallback(u32 source, u32 type, u32 id, u32 severity, i32 length, const char * message, void * userdata);
 void gfCheckExtensions(i32 extensions_count, const char ** extensions);
 void gfWindow(SDL_Window ** sdl_window, SDL_GLContext * sdl_glcontext, u32 sdl_init_flags, u32 sdl_window_flags, const char * window_title, i32 window_width, i32 window_height, i32 msaa_samples);
-void gfErrorAndQuit(const char * title, const char * description);
+void gfError(const char * title, const char * description);
 
 #ifdef __cplusplus
 }
@@ -388,7 +388,7 @@ void gfErrorAndQuit(const char * title, const char * description);
 gpu_buffer_t gfBufferCreate(gpu_buffer_t tbo)
 {
   if(!tbo.format)
-    gfErrorAndQuit(__FUNCTION__, "Error: TBO format is 0");
+    gfError(__FUNCTION__, "Error: TBO format is 0");
 
   u32 elem_width = 0;
   u32 elem_bytes = 0;
@@ -425,11 +425,11 @@ gpu_buffer_t gfBufferCreate(gpu_buffer_t tbo)
     case(xyzw_u8):  elem_width = 4; elem_bytes = sizeof(u8);  break;
     case(xyzw_u16): elem_width = 4; elem_bytes = sizeof(u16); break;
     case(xyzw_u32): elem_width = 4; elem_bytes = sizeof(u32); break;
-    default:gfErrorAndQuit(__FUNCTION__, "Error: Wrong TBO format");
+    default: gfError(__FUNCTION__, "Error: Wrong TBO format");
   }
   
   if(!tbo.bytes && !tbo.count)
-    gfErrorAndQuit(__FUNCTION__, "Error: TBO bytes && count are 0");
+    gfError(__FUNCTION__, "Error: TBO bytes and count are 0");
   
   if(!tbo.bytes)
     tbo.bytes = tbo.count * elem_width * elem_bytes;
@@ -451,13 +451,13 @@ gpu_buffer_t gfBufferCreate(gpu_buffer_t tbo)
 gpu_texture_t gfTextureCreate(gpu_texture_t texture)
 {
   if(!texture.w)
-    gfErrorAndQuit(__FUNCTION__, "Error: Texture w is 0");
+    gfError(__FUNCTION__, "Error: Texture w is 0");
   
   if(!texture.h)
-    gfErrorAndQuit(__FUNCTION__, "Error: Texture h is 0");
+    gfError(__FUNCTION__, "Error: Texture h is 0");
   
   if(!texture.format)
-    gfErrorAndQuit(__FUNCTION__, "Error: Texture format is 0");
+    gfError(__FUNCTION__, "Error: Texture format is 0");
   
   if(!texture.count)  texture.count  = 1;
   if(!texture.mipmap) texture.mipmap = 1;
@@ -480,7 +480,7 @@ gpu_texture_t gfTextureCreateFromBmp(
   for(i32 i = 0; i < texture_count; ++i)
   {
     SDL_Surface * bmp = SDL_LoadBMP(texture_paths[i]);
-    if(!bmp) gfErrorAndQuit("Error: File not found", texture_paths[i]);
+    if(!bmp) gfError("Error: File not found", texture_paths[i]);
     gfTextureSetPixels(texture.id, i, 0, 0, texture.w, texture.h, GL_BGR, bmp->pixels);
     SDL_FreeSurface(bmp);
   }
@@ -513,12 +513,12 @@ gpu_texture_t gfCubemapCreateFromBmp(
     SDL_Surface * bmp_pos_z = SDL_LoadBMP(pos_z_texture_paths[i]);
     SDL_Surface * bmp_neg_z = SDL_LoadBMP(neg_z_texture_paths[i]);
 
-    if(!bmp_pos_x) gfErrorAndQuit("Error: File not found", pos_x_texture_paths[i]);
-    if(!bmp_neg_x) gfErrorAndQuit("Error: File not found", neg_x_texture_paths[i]);
-    if(!bmp_pos_y) gfErrorAndQuit("Error: File not found", pos_y_texture_paths[i]);
-    if(!bmp_neg_y) gfErrorAndQuit("Error: File not found", neg_y_texture_paths[i]);
-    if(!bmp_pos_z) gfErrorAndQuit("Error: File not found", pos_z_texture_paths[i]);
-    if(!bmp_neg_z) gfErrorAndQuit("Error: File not found", neg_z_texture_paths[i]);
+    if(!bmp_pos_x) gfError("Error: File not found", pos_x_texture_paths[i]);
+    if(!bmp_neg_x) gfError("Error: File not found", neg_x_texture_paths[i]);
+    if(!bmp_pos_y) gfError("Error: File not found", pos_y_texture_paths[i]);
+    if(!bmp_neg_y) gfError("Error: File not found", neg_y_texture_paths[i]);
+    if(!bmp_pos_z) gfError("Error: File not found", pos_z_texture_paths[i]);
+    if(!bmp_neg_z) gfError("Error: File not found", neg_z_texture_paths[i]);
     
     gfTextureSetPixels(texture.id, i * 6 + 0, 0, 0, texture.w, texture.h, GL_BGR, bmp_pos_x->pixels);
     gfTextureSetPixels(texture.id, i * 6 + 1, 0, 0, texture.w, texture.h, GL_BGR, bmp_neg_x->pixels);
@@ -641,7 +641,7 @@ u32 gfProgramCreateFromFile(
   const char * shader_filepath)
 {
   SDL_RWops * fd = SDL_RWFromFile(shader_filepath, "rb");
-  if(fd == NULL) gfErrorAndQuit("Error: File not found", shader_filepath);
+  if(fd == NULL) gfError("Error: File not found", shader_filepath);
   SDL_RWseek(fd, 0, RW_SEEK_END);
   u32 bytes = (u32)SDL_RWtell(fd);
   SDL_RWseek(fd, 0, RW_SEEK_SET);
@@ -751,7 +751,7 @@ void gfCheckExtensions(
   for(i32 i = 0; i < extensions_count; ++i)
   {
     if(!SDL_GL_ExtensionSupported(extensions[i]))
-      gfErrorAndQuit("Error: Unsupported OpenGL Extension", extensions[i]);
+      gfError("Error: Unsupported OpenGL Extension", extensions[i]);
   }
 }
 
@@ -766,13 +766,14 @@ void gfWindow(
   i32 msaa_samples)
 {
   if(SDL_Init(SDL_INIT_VIDEO | sdl_init_flags))
-    gfErrorAndQuit("Error: SDL_Init", SDL_GetError());
+    gfError("Error: SDL_Init", SDL_GetError());
 
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa_samples);
   SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
+  
   #ifndef RELEASE
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
   #endif
@@ -784,15 +785,15 @@ void gfWindow(
   );
 
   if(*sdl_window == NULL)
-    gfErrorAndQuit("Error: SDL_CreateWindow", SDL_GetError());
+    gfError("Error: SDL_CreateWindow", SDL_GetError());
 
   *sdl_glcontext = SDL_GL_CreateContext(*sdl_window);
 
   if(*sdl_glcontext == NULL)
-    gfErrorAndQuit("Error: SDL_GL_CreateContext", SDL_GetError());
+    gfError("Error: SDL_GL_CreateContext", SDL_GetError());
 
   if(SDL_GL_LoadLibrary(NULL))
-    gfErrorAndQuit("Error: SDL_GL_LoadLibrary", SDL_GetError());
+    gfError("Error: SDL_GL_LoadLibrary", SDL_GetError());
 
   const char * extensions[] =
   {
@@ -870,6 +871,7 @@ void gfWindow(
   void (*glCreateVertexArrays)(i32 n, u32 * arrays) = SDL_GL_GetProcAddress("glCreateVertexArrays");
   void (*glBindVertexArray)(u32 array) = SDL_GL_GetProcAddress("glBindVertexArray");
   void (*glBlendFunc)(u32 sfactor, u32 dfactor) = SDL_GL_GetProcAddress("glBlendFunc");
+  
   #ifndef RELEASE
   typedef void (*GLDEBUGPROC)(u32 source, u32 type, u32 id, u32 severity, i32 length, const char * message, const void * userParam);
   void (*glDebugMessageCallback)(GLDEBUGPROC callback, const void * userParam) = SDL_GL_GetProcAddress("glDebugMessageCallback");
@@ -887,13 +889,11 @@ void gfWindow(
   #pragma GCC diagnostic pop
 }
 
-void gfErrorAndQuit(
+void gfError(
   const char * title,
   const char * description)
 {
-  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, description, NULL);
-  SDL_Quit();
-  exit(1);
+  SDL_Log("%s: %s\n", title, description);
 }
 
 #endif // GLFAST_IMPLEMENTATION

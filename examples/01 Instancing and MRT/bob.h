@@ -74,7 +74,7 @@ void gfBobReadHeader(
 {
   SDL_RWops * fd = SDL_RWFromFile(path, "rb");
   if(fd == NULL)
-    gfErrorAndQuit("Error: File Not Found", path);
+    gfError("Error: File Not Found", path);
   
   SDL_RWread(fd, bytes_vp, sizeof(u32), 1);
   SDL_RWread(fd, bytes_vt, sizeof(u32), 1);
@@ -93,7 +93,7 @@ void gfBobRead(
 {
   SDL_RWops * fd = SDL_RWFromFile(path, "rb");
   if(fd == NULL)
-    gfErrorAndQuit("Error: File Not Found", path);
+    gfError("Error: File Not Found", path);
   
   SDL_RWseek(fd, 4 * sizeof(u32), RW_SEEK_CUR);
   SDL_RWread(fd, *alloc_vp, bytes_vp, 1);
