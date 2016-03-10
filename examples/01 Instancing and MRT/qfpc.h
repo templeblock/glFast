@@ -28,10 +28,6 @@
 #ifndef QFPC_H_
 #define QFPC_H_
 
-#ifndef cast
-#define cast
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -89,8 +85,8 @@ void qfpcQAxisAngle(
   const float * axis,
   float angle_rad)
 {
-  float s = cast(float)QFPC_SIN(angle_rad / 2.f);
-  float c = cast(float)QFPC_COS(angle_rad / 2.f);
+  float s = (float)QFPC_SIN(angle_rad / 2.f);
+  float c = (float)QFPC_COS(angle_rad / 2.f);
   
   q[0] = axis[0] * s;
   q[1] = axis[1] * s;
@@ -125,7 +121,7 @@ float qfpcV3Len(const float * v)
   float y = v[1];
   float z = v[2];
   
-  return cast(float)QFPC_SQRT((x * x) + (y * y) + (z * z));
+  return (float)QFPC_SQRT((x * x) + (y * y) + (z * z));
 }
 
 void qfpcV3Norm(float * v)

@@ -93,7 +93,7 @@ void Perspective(
   f32 n,
   f32 f)
 {
-  f32 d = 1.f / cast(f32)tan(fov_y_rad * 0.5f);
+  f32 d = 1.f / (f32)tan(fov_y_rad * 0.5f);
   proj[0] = d / aspect;
   proj[1] = d;
   proj[2] = (n + f) / (n - f);
@@ -104,7 +104,7 @@ f32 Aspect(SDL_Window * sdl_window)
 {
   i32 w, h;
   SDL_GetWindowSize(sdl_window, &w, &h);
-  return w / cast(f32)h;
+  return w / (f32)h;
 }
 
 i32 main(i32 ArgCount, char ** Args)
@@ -282,7 +282,7 @@ i32 main(i32 ArgCount, char ** Args)
       &cam_rot.x,
       &cam_mat.sd_x,
       0.10f,
-      0.05f * cast(f32)dt,
+      0.05f * (f32)dt,
       mouse_x_rel,
       mouse_y_rel,
       key[SDL_SCANCODE_W],
@@ -303,7 +303,7 @@ i32 main(i32 ArgCount, char ** Args)
     glProgramUniform4fv(vs_cubemap, 2, 1, &cam_prj.x);
     
     for(u32 i = 0; i < 90; ++i)
-      ins_pos.as_vec3[i].y = cast(f32)sin((t_curr*0.0015f)+(i*0.5f))*0.3f;
+      ins_pos.as_vec3[i].y = (f32)sin((t_curr*0.0015f)+(i*0.5f))*0.3f;
     
     glBindFramebuffer(FBO, fbo);
       glClear(CLEAR_COLOR | CLEAR_DEPTH);
