@@ -7,7 +7,7 @@ This public domain header-only C library uses only 40 modern DSA AZDO OpenGL fun
 
 The contract:
 
- * SDL2 and desktop OpenGL only. Doesn't support OpenGL ES or WebGL.
+ * SDL2, desktop OpenGL and Linux only. Doesn't support Windows, OS X, OpenGL ES or WebGL.
  * GPU memory is immutable. Once allocated you can't resize it, but you still can change its content.
  * No multithreaded or asynchronous CPU<->GPU interactions. No barriers and sync points except for glFinish call.
  * CPU sends data to GPU. GPU can't send data back to CPU, with an exception of reading textures from GPU to CPU.
