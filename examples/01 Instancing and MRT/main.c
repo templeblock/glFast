@@ -269,7 +269,7 @@ i32 main(i32 ArgCount, char ** Args)
   while(1)
   {
     u32 t_curr = SDL_GetTicks();
-    d64 dt = ((t_curr - t_prev) * 60.0) / 1000.0;
+    f64 dt = ((t_curr - t_prev) * 60.0) / 1000.0;
     
     SDL_PumpEvents();
     i32 mouse_x_rel = 0;

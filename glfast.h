@@ -36,34 +36,34 @@
 extern "C" {
 #endif
 
-// COMMONS /////////////////////////////////////////////////////////////////////
+// RUST TYPES //////////////////////////////////////////////////////////////////
 
 #ifndef i8
 #define i8 int8_t
-#endif
-
-#ifndef u8
-#define u8 uint8_t
 #endif
 
 #ifndef i16
 #define i16 int16_t
 #endif
 
-#ifndef u16
-#define u16 uint16_t
-#endif
-
 #ifndef i32
 #define i32 int32_t
 #endif
 
-#ifndef u32
-#define u32 uint32_t
-#endif
-
 #ifndef i64
 #define i64 int64_t
+#endif
+
+#ifndef u8
+#define u8 uint8_t
+#endif
+
+#ifndef u16
+#define u16 uint16_t
+#endif
+
+#ifndef u32
+#define u32 uint32_t
 #endif
 
 #ifndef u64
@@ -78,8 +78,8 @@ extern "C" {
 #define f32 float
 #endif
 
-#ifndef d64
-#define d64 double
+#ifndef f64
+#define f64 double
 #endif
 
 // OPENGL //////////////////////////////////////////////////////////////////////
@@ -209,7 +209,7 @@ void (*glUseProgramStages)(u32 pipeline, u32 stages, u32 program);
 void (*glDrawArraysInstancedBaseInstance)(u32 mode, i32 first, i32 count, i32 instancecount, u32 baseinstance);
 void (*glProgramUniform1uiv)(u32 program, i32 location, i32 count, const u32 * value);
 void (*glProgramUniform1iv)(u32 program, i32 location, i32 count, const i32 * value);
-void (*glProgramUniform1dv)(u32 program, i32 location, i32 count, const d64 * value);
+void (*glProgramUniform1dv)(u32 program, i32 location, i32 count, const f64 * value);
 void (*glProgramUniform1fv)(u32 program, i32 location, i32 count, const f32 * value);
 void (*glProgramUniform2fv)(u32 program, i32 location, i32 count, const f32 * value);
 void (*glProgramUniform3fv)(u32 program, i32 location, i32 count, const f32 * value);
