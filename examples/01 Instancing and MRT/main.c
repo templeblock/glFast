@@ -153,13 +153,14 @@ i32 main(i32 ArgCount, char ** Args)
   
   u32 vs_mesh = gfProgramCreateFromFile(VERT, RESRC.vs_mesh);
   u32 fs_mesh = gfProgramCreateFromFile(FRAG, RESRC.fs_mesh);
+  u32 pp_mesh = gfProgramPipelineCreate(vs_mesh, fs_mesh);
+  
   u32 vs_quad = gfProgramCreateFromFile(VERT, RESRC.vs_quad);
   u32 fs_quad = gfProgramCreateFromFile(FRAG, RESRC.fs_quad);
+  u32 pp_quad = gfProgramPipelineCreate(vs_quad, fs_quad);
+  
   u32 vs_cubemap = gfProgramCreateFromFile(VERT, RESRC.vs_cubemap);
   u32 fs_cubemap = gfProgramCreateFromFile(FRAG, RESRC.fs_cubemap);
-  
-  u32 pp_mesh = gfProgramPipelineCreate(vs_mesh, fs_mesh);
-  u32 pp_quad = gfProgramPipelineCreate(vs_quad, fs_quad);
   u32 pp_cubemap = gfProgramPipelineCreate(vs_cubemap, fs_cubemap);
   
   gpu_cmd_t cmd[3] = {};
