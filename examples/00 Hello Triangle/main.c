@@ -11,7 +11,7 @@ i32 main()
   
   gfWindow(&sdl_window, &sdl_glcontext, 0, 0, "App", 1280, 720, 4);
   
-  gpu_buffer_t mesh = gfBufferCreate((gpu_buffer_t){.format = xyz_f32, .count = 3});
+  gpu_buffer_t mesh = gfBufferCreate(.format = xyz_f32, .count = 3);
   
   mesh.as_vec3[0].x = -0.5f;
   mesh.as_vec3[0].y = -0.5f;

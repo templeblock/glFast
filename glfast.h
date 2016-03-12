@@ -356,14 +356,17 @@ typedef struct
 
 // PROTOTYPES //////////////////////////////////////////////////////////////////
 
-gpu_buffer_t gfBufferCreate(gpu_buffer_t tbo);
-gpu_texture_t gfTextureCreate(gpu_texture_t texture);
+gpu_buffer_t gfBufferCreateFromStruct(gpu_buffer_t tbo);
+#define gfBufferCreate(...) gfBufferCreateFromStruct((gpu_buffer_t){__VA_ARGS__})
+gpu_texture_t gfTextureCreateFromStruct(gpu_texture_t texture);
+#define gfTextureCreate(...) gfTextureCreateFromStruct((gpu_texture_t){__VA_ARGS__})
 gpu_texture_t gfTextureCreateFromBmp(i32 width, i32 height, i32 mipmap, i32 texture_count, const char ** texture_paths);
 gpu_texture_t gfCubemapCreateFromBmp(i32 width, i32 height, i32 mipmap, i32 texture_count, const char ** pos_x_texture_paths, const char ** neg_x_texture_paths, const char ** pos_y_texture_paths, const char ** neg_y_texture_paths, const char ** pos_z_texture_paths, const char ** neg_z_texture_paths);
 void gfTextureSetPixels(u32 texture_id, i32 texture_layer, i32 x, i32 y, i32 width, i32 height, u32 format, const void * data);
 void gfTextureGetPixels(u32 texture_id, i32 texture_layer, i32 x, i32 y, i32 width, i32 height, u32 format, i32 pixels_bytes, void * pixels);
 void gfTextureSaveToBmp(u32 texture_id, i32 texture_layer, i32 width, i32 height, const char * bmp_filepath);
-gpu_sampler_t gfSamplerCreate(gpu_sampler_t sampler);
+gpu_sampler_t gfSamplerCreateFromStruct(gpu_sampler_t sampler);
+#define gfSamplerCreate(...) gfSamplerCreateFromStruct((gpu_sampler_t){__VA_ARGS__})
 u32 gfFboCreate();
 void gfFboBindDepth(u32 fbo, u32 texture_id, i32 texture_layer);
 void gfFboBindColor(u32 fbo, i32 texture_count, const u32 * texture_ids, const i32 * texture_layers);
@@ -385,10 +388,13 @@ void gfError(const char * title, const char * description);
 
 #ifdef GLFAST_IMPLEMENTATION
 
-gpu_buffer_t gfBufferCreate(gpu_buffer_t tbo)
+gpu_buffer_t gfBufferCreateFromStruct(gpu_buffer_t tbo)
 {
   if(!tbo.format)
     gfError(__FUNCTION__, "Error: TBO format is 0");
+
+  if(!tbo.bytes && !tbo.count)
+    gfError(__FUNCTION__, "Error: TBO bytes and count are 0");
 
   u32 elem_width = 0;
   u32 elem_bytes = 0;
@@ -428,9 +434,6 @@ gpu_buffer_t gfBufferCreate(gpu_buffer_t tbo)
     default: gfError(__FUNCTION__, "Error: Wrong TBO format");
   }
   
-  if(!tbo.bytes && !tbo.count)
-    gfError(__FUNCTION__, "Error: TBO bytes and count are 0");
-  
   if(!tbo.bytes)
     tbo.bytes = tbo.count * elem_width * elem_bytes;
   else
@@ -448,7 +451,7 @@ gpu_buffer_t gfBufferCreate(gpu_buffer_t tbo)
   return tbo;
 }
 
-gpu_texture_t gfTextureCreate(gpu_texture_t texture)
+gpu_texture_t gfTextureCreateFromStruct(gpu_texture_t texture)
 {
   if(!texture.w)
     gfError(__FUNCTION__, "Error: Texture w is 0");
@@ -475,7 +478,7 @@ gpu_texture_t gfTextureCreateFromBmp(
   i32 texture_count,
   const char ** texture_paths)
 {
-  gpu_texture_t texture = gfTextureCreate((gpu_texture_t){.w = width, .h = height, .format = srgb_b8, .count = texture_count, .mipmap = mipmap});
+  gpu_texture_t texture = gfTextureCreate(.w = width, .h = height, .format = srgb_b8, .count = texture_count, .mipmap = mipmap);
   
   for(i32 i = 0; i < texture_count; ++i)
   {
@@ -502,7 +505,7 @@ gpu_texture_t gfCubemapCreateFromBmp(
   const char ** pos_z_texture_paths,
   const char ** neg_z_texture_paths)
 {
-  gpu_texture_t texture = gfTextureCreate((gpu_texture_t){.w = width, .h = height, .format = srgb_b8, .count = texture_count, .mipmap = mipmap, .cubemap = 1});
+  gpu_texture_t texture = gfTextureCreate(.w = width, .h = height, .format = srgb_b8, .count = texture_count, .mipmap = mipmap, .cubemap = 1);
   
   for(i32 i = 0; i < texture_count; ++i)
   {
@@ -586,7 +589,7 @@ void gfTextureSaveToBmp(
   SDL_free(pixels);
 }
 
-gpu_sampler_t gfSamplerCreate(gpu_sampler_t sampler)
+gpu_sampler_t gfSamplerCreateFromStruct(gpu_sampler_t sampler)
 {
   if(!sampler.aniso) sampler.aniso = 1;
   if(!sampler.min)   sampler.min   = GL_LINEAR_MIPMAP_LINEAR;

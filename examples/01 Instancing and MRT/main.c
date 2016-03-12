@@ -176,8 +176,8 @@ i32 main(i32 ArgCount, char ** Args)
   cmd[1].instance_count = 30;
   cmd[2].instance_count = 30;
   
-  gpu_buffer_t ins_first = gfBufferCreate((gpu_buffer_t){.format = x_u32, .count = countof(cmd)});
-  gpu_buffer_t ins_pos = gfBufferCreate((gpu_buffer_t){.format = xyz_f32, .count = 90});
+  gpu_buffer_t ins_first = gfBufferCreate(.format = x_u32, .count = countof(cmd));
+  gpu_buffer_t ins_pos = gfBufferCreate(.format = xyz_f32, .count = 90);
   
   for(u32 i = 0; i < ins_first.count; ++i)
     ins_first.as_u32[i] = cmd[i].instance_first;
@@ -189,12 +189,12 @@ i32 main(i32 ArgCount, char ** Args)
     ins_pos.as_vec3[i].z = (i/row)*space;
   }
 
-  gpu_texture_t fbo_depth    = gfTextureCreate((gpu_texture_t){.w = 1280, .h = 720, .format = depth_b24});
-  gpu_texture_t fbo_mesh_id  = gfTextureCreate((gpu_texture_t){.w = 1280, .h = 720, .format = rgb_b8});
-  gpu_texture_t fbo_diffuse  = gfTextureCreate((gpu_texture_t){.w = 1280, .h = 720, .format = srgba_b8});
-  gpu_texture_t fbo_reflect  = gfTextureCreate((gpu_texture_t){.w = 1280, .h = 720, .format = srgba_b8});
-  gpu_texture_t fbo_normal   = gfTextureCreate((gpu_texture_t){.w = 1280, .h = 720, .format = rgba_f16});
-  gpu_texture_t fbo_position = gfTextureCreate((gpu_texture_t){.w = 1280, .h = 720, .format = rgba_f32});
+  gpu_texture_t fbo_depth    = gfTextureCreate(.w = 1280, .h = 720, .format = depth_b24);
+  gpu_texture_t fbo_mesh_id  = gfTextureCreate(.w = 1280, .h = 720, .format = rgb_b8);
+  gpu_texture_t fbo_diffuse  = gfTextureCreate(.w = 1280, .h = 720, .format = srgba_b8);
+  gpu_texture_t fbo_reflect  = gfTextureCreate(.w = 1280, .h = 720, .format = srgba_b8);
+  gpu_texture_t fbo_normal   = gfTextureCreate(.w = 1280, .h = 720, .format = rgba_f16);
+  gpu_texture_t fbo_position = gfTextureCreate(.w = 1280, .h = 720, .format = rgba_f32);
   
   u32 fbo_colors[] =
   {
@@ -209,8 +209,8 @@ i32 main(i32 ArgCount, char ** Args)
   gfFboBindDepth(fbo, fbo_depth.id, 0);
   gfFboBindColor(fbo, countof(fbo_colors), fbo_colors, 0);
   
-  gpu_sampler_t s_textures = gfSamplerCreate((gpu_sampler_t){.aniso = 4});
-  gpu_sampler_t s_fbo = gfSamplerCreate((gpu_sampler_t){.min = GL_NEAREST, .mag = GL_NEAREST});
+  gpu_sampler_t s_textures = gfSamplerCreate(.aniso = 4);
+  gpu_sampler_t s_fbo = gfSamplerCreate(.min = GL_NEAREST, .mag = GL_NEAREST);
   
   u32 state_textures[16] =
   {

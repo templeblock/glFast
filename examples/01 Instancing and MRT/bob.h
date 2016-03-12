@@ -110,8 +110,8 @@ bob_t gfBobCreate(
 {
   bob_t bobs = {};
 
-  bobs.first = gfBufferCreate((gpu_buffer_t){.format = x_u32, .count = bob_count});
-  bobs.count = gfBufferCreate((gpu_buffer_t){.format = x_u32, .count = bob_count});
+  bobs.first = gfBufferCreate(.format = x_u32, .count = bob_count);
+  bobs.count = gfBufferCreate(.format = x_u32, .count = bob_count);
   
   u32 mesh_id_format = x_u32;
   
@@ -158,12 +158,12 @@ bob_t gfBobCreate(
     total_idx_count += bobs.count.as_u32[i];
   }
   
-  bobs.mesh_id    = gfBufferCreate(bobs.mesh_id);
-  bobs.attr_first = gfBufferCreate(bobs.attr_first);
-  bobs.attr_id    = gfBufferCreate(bobs.attr_id);
-  bobs.pos        = gfBufferCreate(bobs.pos);
-  bobs.uv         = gfBufferCreate(bobs.uv);
-  bobs.normal     = gfBufferCreate(bobs.normal);
+  bobs.mesh_id    = gfBufferCreateFromStruct(bobs.mesh_id);
+  bobs.attr_first = gfBufferCreateFromStruct(bobs.attr_first);
+  bobs.attr_id    = gfBufferCreateFromStruct(bobs.attr_id);
+  bobs.pos        = gfBufferCreateFromStruct(bobs.pos);
+  bobs.uv         = gfBufferCreateFromStruct(bobs.uv);
+  bobs.normal     = gfBufferCreateFromStruct(bobs.normal);
   
   for(u32 i = 0,
           j = 0,
