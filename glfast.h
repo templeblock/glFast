@@ -374,6 +374,7 @@ u32 gfProgramCreateFromFile(u32 shader_type, const char * shader_filepath);
 u32 gfProgramCreateFromString(u32 shader_type, const char * shader_string);
 u32 gfProgramPipelineCreate(u32 vert_program, u32 frag_program);
 void gfDraw(u32 program_pipeline, u32 gpu_cmd_count, const gpu_cmd_t * gpu_cmd);
+void gfFire(u32 program_pipeline, u32 count);
 void gfDebugCallback(u32 source, u32 type, u32 id, u32 severity, i32 length, const char * message, void * userdata);
 void gfCheckExtensions(i32 extensions_count, const char ** extensions);
 void gfWindow(SDL_Window ** sdl_window, SDL_GLContext * sdl_glcontext, u32 sdl_init_flags, u32 sdl_window_flags, const char * window_title, i32 window_width, i32 window_height, i32 msaa_samples);
@@ -691,6 +692,13 @@ void gfDraw(
   }
   
   glBindProgramPipeline(0);
+}
+
+void gfFire(
+  u32 program_pipeline,
+  u32 count)
+{
+  gfDraw(program_pipeline, 1, &(gpu_cmd_t){.count = count, .instance_count = 1});
 }
 
 void gfDebugCallback(

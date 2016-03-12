@@ -312,9 +312,9 @@ i32 main(i32 ArgCount, char ** Args)
     
     glClear(CLEAR_COLOR | CLEAR_DEPTH);
     glDisable(DO_DEPTH);
-      gfDraw(pp_cubemap, 1, &(gpu_cmd_t){.count = 36, .instance_count = 1});
+      gfFire(pp_cubemap, 36);
     glEnable(DO_DEPTH);
-    gfDraw(pp_quad, 1, &(gpu_cmd_t){.count = 6, .instance_count = 1});
+    gfFire(pp_quad, 6);
 
     SDL_Event event;
     while(SDL_PollEvent(&event))
