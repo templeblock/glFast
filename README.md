@@ -3,7 +3,7 @@ glFast
 
 <img width="800px" src="http://i.imgur.com/dQEm83w.gif" />
 
-This public domain header-only C library uses only 40 modern DSA AZDO OpenGL functions to draw geometry and post-process textures.
+glFast is a public domain header-only C11 library that uses only 40 modern DSA AZDO OpenGL functions to draw geometry and post-process textures.
 
 The contract:
 

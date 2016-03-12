@@ -126,7 +126,7 @@ i32 main(i32 ArgCount, char ** Args)
   {
     RESRC.monkey_bob,
     RESRC.sphere_bob,
-    RESRC.teapot_bob
+    RESRC.teapot_bob,
   };
 
   bob_t meshes = gfBobCreate(countof(bobs), bobs);
@@ -135,7 +135,7 @@ i32 main(i32 ArgCount, char ** Args)
   {
     RESRC.texture_1,
     RESRC.texture_2,
-    RESRC.texture_3
+    RESRC.texture_3,
   };
 
   gpu_texture_t textures = gfTextureCreateFromBmp(512, 512, 4, countof(bmps), bmps);
@@ -185,37 +185,31 @@ i32 main(i32 ArgCount, char ** Args)
   gpu_buffer_t ins_pos = gfBufferCreate(.format = xyz_f32, .count = 90);
   
   for(u32 i = 0; i < ins_first.count; ++i)
+  {
     ins_first.as_u32[i] = cmd[i].instance_first;
+  }
   
   for(u32 i = 0, row = 10, space = 3; i < 90; ++i)
   {
-    ins_pos.as_vec3[i].x = i*space-(i/row)*row*space;
+    ins_pos.as_vec3[i].x = i * space - (i / row) * row * space;
     ins_pos.as_vec3[i].y = 0;
-    ins_pos.as_vec3[i].z = (i/row)*space;
+    ins_pos.as_vec3[i].z = (i / row) * space;
   }
 
-  gpu_texture_t fbo_depth    = gfTextureCreate(.w = 1280, .h = 720, .format = depth_b32);
-  gpu_texture_t fbo_mesh_id  = gfTextureCreate(.w = 1280, .h = 720, .format = rgb_b8);
-  gpu_texture_t fbo_diffuse  = gfTextureCreate(.w = 1280, .h = 720, .format = srgba_b8);
-  gpu_texture_t fbo_reflect  = gfTextureCreate(.w = 1280, .h = 720, .format = srgba_b8);
-  gpu_texture_t fbo_normal   = gfTextureCreate(.w = 1280, .h = 720, .format = rgba_f16);
-  gpu_texture_t fbo_position = gfTextureCreate(.w = 1280, .h = 720, .format = rgba_f32);
+  gpu_texture_t fbo_depth = gfTextureCreate(.w = 1280, 720, .format = depth_b32);
+  gpu_texture_t fbo_color = gfTextureCreate(.w = 1280, 720, .format = srgba_b8);
   
   u32 fbo_colors[] =
   {
-    [0] = fbo_mesh_id.id,
-    [1] = fbo_diffuse.id,
-    [2] = fbo_reflect.id,
-    [3] = fbo_normal.id,
-    [4] = fbo_position.id
+    [0] = fbo_color.id,
   };
   
   u32 fbo = gfFboCreate();
   gfFboBindDepth(fbo, fbo_depth.id, 0);
   gfFboBindColor(fbo, countof(fbo_colors), fbo_colors, 0);
   
-  gpu_sampler_t s_textures = gfSamplerCreate(.aniso = 4);
-  gpu_sampler_t s_fbo = gfSamplerCreate(.min = GL_NEAREST, .mag = GL_NEAREST);
+  gpu_sampler_t s_textures = gfSamplerCreate(4);
+  gpu_sampler_t s_fbo = gfSamplerCreate(.min = GL_NEAREST, GL_NEAREST);
   
   u32 state_textures[16] =
   {
@@ -229,12 +223,7 @@ i32 main(i32 ArgCount, char ** Args)
     [7] = ins_pos.id,
     [8] = textures.id,
     [9] = cubemaps.id,
-   [10] = fbo_depth.id,
-   [11] = fbo_mesh_id.id,
-   [12] = fbo_diffuse.id,
-   [13] = fbo_reflect.id,
-   [14] = fbo_normal.id,
-   [15] = fbo_position.id
+   [10] = fbo_color.id,
   };
   
   u32 state_samplers[16] =
@@ -242,11 +231,6 @@ i32 main(i32 ArgCount, char ** Args)
     [8] = s_textures.id,
     [9] = s_textures.id,
    [10] = s_fbo.id,
-   [11] = s_fbo.id,
-   [12] = s_fbo.id,
-   [13] = s_fbo.id,
-   [14] = s_fbo.id,
-   [15] = s_fbo.id
   };
   
   glBindTextures(0, 16, state_textures);
@@ -298,17 +282,24 @@ i32 main(i32 ArgCount, char ** Args)
       key[SDL_SCANCODE_Q]
     );
     
+    static int show_pass = 0;
+    if(key[SDL_SCANCODE_1]) show_pass = 0;
+    if(key[SDL_SCANCODE_2]) show_pass = 1;
+    if(key[SDL_SCANCODE_3]) show_pass = 2;
+    if(key[SDL_SCANCODE_4]) show_pass = 3;
+    if(key[SDL_SCANCODE_5]) show_pass = 4;
+    
     glProgramUniform3fv(vs_mesh, 0, 1, &cam_pos.x);
     glProgramUniform4fv(vs_mesh, 1, 1, &cam_rot.x);
     glProgramUniform4fv(vs_mesh, 2, 1, &cam_prj.x);
     glProgramUniform3fv(fs_mesh, 0, 1, &cam_pos.x);
-    glProgramUniform3fv(fs_quad, 0, 1, &cam_pos.x);
+    glProgramUniform1iv(fs_mesh, 1, 1, &show_pass);
     glProgramUniform3fv(vs_cubemap, 0, 1, &cam_pos.x);
     glProgramUniform4fv(vs_cubemap, 1, 1, &cam_rot.x);
     glProgramUniform4fv(vs_cubemap, 2, 1, &cam_prj.x);
     
     for(u32 i = 0; i < 90; ++i)
-      ins_pos.as_vec3[i].y = (f32)sin((t_curr*0.0015f)+(i*0.5f))*0.3f;
+      ins_pos.as_vec3[i].y = (f32)sin((t_curr * 0.0015f) + (i * 0.5f)) * 0.3f;
     
     glBindFramebuffer(FBO, fbo);
       glClear(CLEAR_COLOR | CLEAR_DEPTH);
@@ -316,9 +307,14 @@ i32 main(i32 ArgCount, char ** Args)
     glBindFramebuffer(FBO, 0);
     
     glClear(CLEAR_COLOR | CLEAR_DEPTH);
-    glDisable(DO_DEPTH);
-      gfFire(pp_cubemap, 36);
-    glEnable(DO_DEPTH);
+    
+    if(!show_pass)
+    {
+      glDisable(DO_DEPTH);
+        gfFire(pp_cubemap, 36);
+      glEnable(DO_DEPTH);
+    }
+    
     gfFire(pp_quad, 6);
 
     SDL_Event event;

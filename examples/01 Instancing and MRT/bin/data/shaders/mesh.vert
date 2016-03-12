@@ -34,7 +34,7 @@ layout(binding = 5) uniform  samplerBuffer in_normal;
 layout(binding = 6) uniform isamplerBuffer in_ins_first;
 layout(binding = 7) uniform  samplerBuffer in_ins_pos;
 
-flat   out int  vs_mesh_id;
+flat   out int  vs_id;
 smooth out vec2 vs_uv;
 smooth out vec3 vs_normal;
 smooth out vec3 vs_position;
@@ -55,7 +55,7 @@ void main()
   vec3 mv;
   mv = pos + ins_pos;
   
-  vs_mesh_id  = mesh_id;
+  vs_id       = mesh_id;
   vs_uv       = uv;
   vs_normal   = normal;
   vs_position = mv;
