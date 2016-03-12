@@ -163,15 +163,19 @@ i32 main(i32 ArgCount, char ** Args)
   u32 pp_cubemap = gfProgramPipelineCreate(vs_cubemap, fs_cubemap);
   
   gpu_cmd_t cmd[3] = {};
+  
   cmd[0].first = meshes.first.as_u32[0];
   cmd[1].first = meshes.first.as_u32[1];
   cmd[2].first = meshes.first.as_u32[2];
+  
   cmd[0].count = meshes.count.as_u32[0];
   cmd[1].count = meshes.count.as_u32[1];
   cmd[2].count = meshes.count.as_u32[2];
+  
   cmd[0].instance_first = 0;
   cmd[1].instance_first = 30;
   cmd[2].instance_first = 60;
+  
   cmd[0].instance_count = 30;
   cmd[1].instance_count = 30;
   cmd[2].instance_count = 30;

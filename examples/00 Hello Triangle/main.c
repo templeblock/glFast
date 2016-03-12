@@ -26,6 +26,7 @@ i32 main()
   mesh.as_vec3[2].z =  0.0f;
   
   gpu_cmd_t cmd[1] = {};
+  
   cmd[0].count = mesh.count;
   cmd[0].instance_count = 1;
   
