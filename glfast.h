@@ -124,6 +124,7 @@ extern "C" {
 #define GL_SRGB8_ALPHA8 0x8C43
 #define GL_DEPTH_COMPONENT16 0x81A5
 #define GL_DEPTH_COMPONENT24 0x81A6
+#define GL_DEPTH_COMPONENT32 0x81A7
 
 #define GL_TEXTURE_BUFFER 0x8C2A
 #define GL_MAP_WRITE_BIT 0x0002
@@ -256,6 +257,7 @@ void (*glProgramUniform4fv)(u32 program, i32 location, i32 count, const f32 * va
 #define rgba_f32  GL_RGBA32F
 #define depth_b16 GL_DEPTH_COMPONENT16
 #define depth_b24 GL_DEPTH_COMPONENT24
+#define depth_b32 GL_DEPTH_COMPONENT32
 
 #define VERT_HEAD \
   "#version 330\n" \
@@ -812,7 +814,6 @@ void gfWindow(
     "GL_KHR_debug",
     #endif
     "GL_ARB_multi_bind",
-    "GL_ARB_clip_control",
     "GL_ARB_base_instance",
     "GL_ARB_buffer_storage",
     "GL_ARB_texture_storage",
@@ -883,7 +884,7 @@ void gfWindow(
   void (*glCreateVertexArrays)(i32 n, u32 * arrays) = SDL_GL_GetProcAddress("glCreateVertexArrays");
   void (*glBindVertexArray)(u32 array) = SDL_GL_GetProcAddress("glBindVertexArray");
   void (*glBlendFunc)(u32 sfactor, u32 dfactor) = SDL_GL_GetProcAddress("glBlendFunc");
-  void (*glClipControl)(u32 origin, u32 depth) = SDL_GL_GetProcAddress("glClipControl");
+  void (*glDepthRange)(f64 nearVal, f64 farVal) = SDL_GL_GetProcAddress("glDepthRange");
   
   #ifndef RELEASE
   typedef void (*GLDEBUGPROC)(u32 source, u32 type, u32 id, u32 severity, i32 length, const char * message, const void * userParam);
@@ -896,7 +897,7 @@ void gfWindow(
   glBindVertexArray(vao);
   
   glBlendFunc(0x0302, 0x0303);
-  glClipControl(0x8CA1, 0x935F);
+  glDepthRange(-1.0, 1.0);
   
   glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
   glEnable(GL_FRAMEBUFFER_SRGB);

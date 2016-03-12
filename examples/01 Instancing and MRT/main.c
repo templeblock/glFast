@@ -96,8 +96,8 @@ void Perspective(
   f32 d = 1.f / (f32)tan(fov_y_rad * 0.5f);
   proj[0] = d / aspect;
   proj[1] = d;
-  proj[2] = (n + f) / (n - f);
-  proj[3] = (2.f * n * f) / (n - f);
+  proj[2] = n / (n - f);
+  proj[3] = (f * n) / (n - f);
 }
 
 f32 Aspect(SDL_Window * sdl_window)
@@ -189,7 +189,7 @@ i32 main(i32 ArgCount, char ** Args)
     ins_pos.as_vec3[i].z = (i/row)*space;
   }
 
-  gpu_texture_t fbo_depth    = gfTextureCreate(.w = 1280, .h = 720, .format = depth_b24);
+  gpu_texture_t fbo_depth    = gfTextureCreate(.w = 1280, .h = 720, .format = depth_b32);
   gpu_texture_t fbo_mesh_id  = gfTextureCreate(.w = 1280, .h = 720, .format = rgb_b8);
   gpu_texture_t fbo_diffuse  = gfTextureCreate(.w = 1280, .h = 720, .format = srgba_b8);
   gpu_texture_t fbo_reflect  = gfTextureCreate(.w = 1280, .h = 720, .format = srgba_b8);
