@@ -812,6 +812,7 @@ void gfWindow(
     "GL_KHR_debug",
     #endif
     "GL_ARB_multi_bind",
+    "GL_ARB_clip_control",
     "GL_ARB_base_instance",
     "GL_ARB_buffer_storage",
     "GL_ARB_texture_storage",
@@ -882,6 +883,7 @@ void gfWindow(
   void (*glCreateVertexArrays)(i32 n, u32 * arrays) = SDL_GL_GetProcAddress("glCreateVertexArrays");
   void (*glBindVertexArray)(u32 array) = SDL_GL_GetProcAddress("glBindVertexArray");
   void (*glBlendFunc)(u32 sfactor, u32 dfactor) = SDL_GL_GetProcAddress("glBlendFunc");
+  void (*glClipControl)(u32 origin, u32 depth) = SDL_GL_GetProcAddress("glClipControl");
   
   #ifndef RELEASE
   typedef void (*GLDEBUGPROC)(u32 source, u32 type, u32 id, u32 severity, i32 length, const char * message, const void * userParam);
@@ -894,6 +896,8 @@ void gfWindow(
   glBindVertexArray(vao);
   
   glBlendFunc(0x0302, 0x0303);
+  glClipControl(0x8CA1, 0x935F);
+  
   glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
   glEnable(GL_FRAMEBUFFER_SRGB);
   
