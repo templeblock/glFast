@@ -369,9 +369,7 @@ void gfTextureGetPixels(u32 texture_id, i32 texture_layer, i32 x, i32 y, i32 wid
 void gfTextureSaveToBmp(u32 texture_id, i32 texture_layer, i32 width, i32 height, const char * bmp_filepath);
 gpu_sampler_t gfSamplerCreateFromStruct(gpu_sampler_t sampler);
 #define gfSamplerCreate(...) gfSamplerCreateFromStruct((gpu_sampler_t){__VA_ARGS__})
-u32 gfFboCreate();
-void gfFboBindDepth(u32 fbo, u32 texture_id, i32 texture_layer);
-void gfFboBindColor(u32 fbo, i32 texture_count, const u32 * texture_ids, const i32 * texture_layers);
+u32 gfFboCreate(u32 depth_texture_id, i32 depth_texture_layer, i32 color_texture_count, const u32 * color_texture_ids, const i32 * color_texture_layers);
 u32 gfProgramCreateFromFile(u32 shader_type, const char * shader_filepath);
 u32 gfProgramCreateFromString(u32 shader_type, const char * shader_string);
 u32 gfProgramPipelineCreate(u32 vert_program, u32 frag_program);
@@ -610,36 +608,31 @@ gpu_sampler_t gfSamplerCreateFromStruct(gpu_sampler_t sampler)
   return sampler;
 }
 
-u32 gfFboCreate()
+u32 gfFboCreate(
+  u32 depth_texture_id,
+  i32 depth_texture_layer,
+  i32 color_texture_count,
+  const u32 * color_texture_ids,
+  const i32 * color_texture_layers)
 {
   u32 fbo;
   glCreateFramebuffers(1, &fbo);
-  return fbo;
-}
-
-void gfFboBindDepth(
-  u32 fbo,
-  u32 texture_id,
-  i32 texture_layer)
-{
-  glNamedFramebufferTextureLayer(fbo, GL_DEPTH_ATTACHMENT, texture_id, 0, texture_layer);
-}
-
-void gfFboBindColor(
-  u32 fbo,
-  i32 texture_count,
-  const u32 * texture_ids,
-  const i32 * texture_layers)
-{
-  u32 attachments[texture_count];
   
-  for(u32 i = 0; i < texture_count; ++i)
+  if(depth_texture_id)
+    glNamedFramebufferTextureLayer(fbo, GL_DEPTH_ATTACHMENT, depth_texture_id, 0, depth_texture_layer);
+  
+  if(color_texture_count)
   {
-    attachments[i] = GL_COLOR_ATTACHMENT0 + i;
-    glNamedFramebufferTextureLayer(fbo, GL_COLOR_ATTACHMENT0 + i, texture_ids[i], 0, texture_layers ? texture_layers[i] : 0);
+    u32 attachments[color_texture_count];
+    for(u32 i = 0; i < color_texture_count; ++i)
+    {
+      attachments[i] = GL_COLOR_ATTACHMENT0 + i;
+      glNamedFramebufferTextureLayer(fbo, GL_COLOR_ATTACHMENT0 + i, color_texture_ids[i], 0, color_texture_layers ? color_texture_layers[i] : 0);
+    }
+    glNamedFramebufferDrawBuffers(fbo, color_texture_count, attachments);
   }
-
-  glNamedFramebufferDrawBuffers(fbo, texture_count, attachments);
+  
+  return fbo;
 }
 
 u32 gfProgramCreateFromFile(

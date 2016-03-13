@@ -204,9 +204,7 @@ i32 main(i32 ArgCount, char ** Args)
     [0] = fbo_color.id,
   };
   
-  u32 fbo = gfFboCreate();
-  gfFboBindDepth(fbo, fbo_depth.id, 0);
-  gfFboBindColor(fbo, countof(fbo_colors), fbo_colors, 0);
+  u32 fbo = gfFboCreate(fbo_depth.id, 0, countof(fbo_colors), fbo_colors, 0);
   
   gpu_sampler_t s_textures = gfSamplerCreate(4);
   gpu_sampler_t s_fbo = gfSamplerCreate(.min = GL_NEAREST, GL_NEAREST);
