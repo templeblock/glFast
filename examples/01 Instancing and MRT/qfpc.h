@@ -204,8 +204,13 @@ void quatFirstPersonCamera(
   float x_quat[4];
   float y_quat[4];
   
-  qfpcQAxisAngle(y_quat, (float[]){ -1.f,  0.f,  0.f }, (y_delta * look_mult) * QFPC_TO_RAD);
-  qfpcQAxisAngle(x_quat, (float[]){  0.f, -1.f,  0.f }, (x_delta * look_mult) * QFPC_TO_RAD);
+  const float nx[3] = { -1.f,  0.f,  0.f };
+  const float py[3] = {  0.f,  1.f,  0.f };
+  const float ny[3] = {  0.f, -1.f,  0.f };
+  const float nz[3] = {  0.f,  0.f, -1.f };
+  
+  qfpcQAxisAngle(y_quat, nx, (y_delta * look_mult) * QFPC_TO_RAD);
+  qfpcQAxisAngle(x_quat, ny, (x_delta * look_mult) * QFPC_TO_RAD);
   
   qfpcQMulq(cam_quat, cam_quat, y_quat);
   qfpcQMulq(cam_quat, x_quat, cam_quat);
@@ -214,9 +219,9 @@ void quatFirstPersonCamera(
   float up_vec3[3];
   float fw_vec3[3];
   
-  qfpcV3Rotq(sd_vec3, (float[]){ -1.f,  0.f,  0.f }, cam_quat);
-  qfpcV3Rotq(up_vec3, (float[]){  0.f,  1.f,  0.f }, cam_quat);
-  qfpcV3Rotq(fw_vec3, (float[]){  0.f,  0.f, -1.f }, cam_quat);
+  qfpcV3Rotq(sd_vec3, nx, cam_quat);
+  qfpcV3Rotq(up_vec3, py, cam_quat);
+  qfpcV3Rotq(fw_vec3, nz, cam_quat);
   
   cam_m3x3[0] = -sd_vec3[0];
   cam_m3x3[1] =  up_vec3[0];
@@ -230,9 +235,9 @@ void quatFirstPersonCamera(
   cam_m3x3[7] =  up_vec3[2];
   cam_m3x3[8] = -fw_vec3[2];
   
-  qfpcV3Mulf(sd_vec3, sd_vec3, key_l - key_r);
-  qfpcV3Mulf(up_vec3, up_vec3, key_u - key_d);
-  qfpcV3Mulf(fw_vec3, fw_vec3, key_f - key_b);
+  qfpcV3Mulf(sd_vec3, sd_vec3, (float)(key_l - key_r));
+  qfpcV3Mulf(up_vec3, up_vec3, (float)(key_u - key_d));
+  qfpcV3Mulf(fw_vec3, fw_vec3, (float)(key_f - key_b));
   
   float move_vec3[3] = { 0.f };
   
