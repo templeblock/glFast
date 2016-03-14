@@ -58,10 +58,7 @@ i32 main()
   u32 fs = gfProgramCreateFromString(GL_FRAGMENT_SHADER, fs_str);
   u32 pp = gfProgramPipelineCreate(vs, fs);
   
-  u32 state_textures[16] =
-  {
-    [0] = mesh.id
-  };
+  u32 state_textures[16] = { mesh.id };
   
   glBindTextures(0, 16, state_textures);
   
