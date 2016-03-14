@@ -181,8 +181,8 @@ i32 main(i32 ArgCount, char ** Args)
   cmd[1].instance_count = 30;
   cmd[2].instance_count = 30;
   
-  gpu_buffer_t ins_first = gfBufferCreate(.format = x_u32, .count = countof(cmd));
-  gpu_buffer_t ins_pos = gfBufferCreate(.format = xyz_f32, .count = 90);
+  gpu_storage_t ins_first = gfStorageCreate(.format = x_u32, .count = countof(cmd));
+  gpu_storage_t ins_pos = gfStorageCreate(.format = xyz_f32, .count = 90);
   
   for(u32 i = 0; i < ins_first.count; ++i)
   {

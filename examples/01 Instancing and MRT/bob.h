@@ -39,15 +39,15 @@ extern "C" {
 typedef struct
 {
   // For gpu_cmd_t
-  gpu_buffer_t first;
-  gpu_buffer_t count;
+  gpu_storage_t first;
+  gpu_storage_t count;
   // For attributes
-  gpu_buffer_t mesh_id;
-  gpu_buffer_t attr_first;
-  gpu_buffer_t attr_id;
-  gpu_buffer_t pos;
-  gpu_buffer_t uv;
-  gpu_buffer_t normal;
+  gpu_storage_t mesh_id;
+  gpu_storage_t attr_first;
+  gpu_storage_t attr_id;
+  gpu_storage_t pos;
+  gpu_storage_t uv;
+  gpu_storage_t normal;
 } bob_t;
 
 // PROTOTYPES //////////////////////////////////////////////////////////////////
@@ -110,8 +110,14 @@ bob_t gfBobCreate(
 {
   bob_t bobs = {};
 
-  bobs.first = gfBufferCreate(.format = x_u32, .count = bob_count);
-  bobs.count = gfBufferCreate(.format = x_u32, .count = bob_count);
+  bobs.first.format = x_u32;
+  bobs.count.format = x_u32;
+
+  bobs.first.count = bob_count;
+  bobs.count.count = bob_count;
+
+  bobs.first = gfStorageCreateFromStruct(bobs.first);
+  bobs.count = gfStorageCreateFromStruct(bobs.count);
   
   u32 mesh_id_format = x_u32;
   
@@ -158,12 +164,12 @@ bob_t gfBobCreate(
     total_idx_count += bobs.count.as_u32[i];
   }
   
-  bobs.mesh_id    = gfBufferCreateFromStruct(bobs.mesh_id);
-  bobs.attr_first = gfBufferCreateFromStruct(bobs.attr_first);
-  bobs.attr_id    = gfBufferCreateFromStruct(bobs.attr_id);
-  bobs.pos        = gfBufferCreateFromStruct(bobs.pos);
-  bobs.uv         = gfBufferCreateFromStruct(bobs.uv);
-  bobs.normal     = gfBufferCreateFromStruct(bobs.normal);
+  bobs.mesh_id    = gfStorageCreateFromStruct(bobs.mesh_id);
+  bobs.attr_first = gfStorageCreateFromStruct(bobs.attr_first);
+  bobs.attr_id    = gfStorageCreateFromStruct(bobs.attr_id);
+  bobs.pos        = gfStorageCreateFromStruct(bobs.pos);
+  bobs.uv         = gfStorageCreateFromStruct(bobs.uv);
+  bobs.normal     = gfStorageCreateFromStruct(bobs.normal);
   
   for(u32 i = 0,
           j = 0,

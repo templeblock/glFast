@@ -326,7 +326,7 @@ typedef struct
   u32 format;
   u32 buffer_id;
   u32 id;
-} gpu_buffer_t;
+} gpu_storage_t;
 
 typedef struct
 {
@@ -358,17 +358,20 @@ typedef struct
 
 // PROTOTYPES //////////////////////////////////////////////////////////////////
 
-gpu_buffer_t gfBufferCreateFromStruct(gpu_buffer_t tbo);
-#define gfBufferCreate(...) gfBufferCreateFromStruct((gpu_buffer_t){__VA_ARGS__})
-gpu_texture_t gfTextureCreateFromStruct(gpu_texture_t texture);
+#ifndef __cplusplus
+#define gfStorageCreate(...) gfStorageCreateFromStruct((gpu_storage_t){__VA_ARGS__})
 #define gfTextureCreate(...) gfTextureCreateFromStruct((gpu_texture_t){__VA_ARGS__})
+#define gfSamplerCreate(...) gfSamplerCreateFromStruct((gpu_sampler_t){__VA_ARGS__})
+#endif
+
+gpu_storage_t gfStorageCreateFromStruct(gpu_storage_t tbo);
+gpu_texture_t gfTextureCreateFromStruct(gpu_texture_t texture);
+gpu_sampler_t gfSamplerCreateFromStruct(gpu_sampler_t sampler);
 gpu_texture_t gfTextureCreateFromBmp(i32 width, i32 height, i32 mipmap, i32 texture_count, const char ** texture_paths);
 gpu_texture_t gfCubemapCreateFromBmp(i32 width, i32 height, i32 mipmap, i32 texture_count, const char ** pos_x_texture_paths, const char ** neg_x_texture_paths, const char ** pos_y_texture_paths, const char ** neg_y_texture_paths, const char ** pos_z_texture_paths, const char ** neg_z_texture_paths);
 void gfTextureSetPixels(u32 texture_id, i32 texture_layer, i32 x, i32 y, i32 width, i32 height, u32 format, const void * data);
 void gfTextureGetPixels(u32 texture_id, i32 texture_layer, i32 x, i32 y, i32 width, i32 height, u32 format, i32 pixels_bytes, void * pixels);
 void gfTextureSaveToBmp(u32 texture_id, i32 texture_layer, i32 width, i32 height, const char * bmp_filepath);
-gpu_sampler_t gfSamplerCreateFromStruct(gpu_sampler_t sampler);
-#define gfSamplerCreate(...) gfSamplerCreateFromStruct((gpu_sampler_t){__VA_ARGS__})
 u32 gfFboCreate(u32 depth_texture_id, i32 depth_texture_layer, i32 color_texture_count, const u32 * color_texture_ids, const i32 * color_texture_layers);
 u32 gfProgramCreateFromFile(u32 shader_type, const char * shader_filepath);
 u32 gfProgramCreateFromString(u32 shader_type, const char * shader_string);
@@ -389,7 +392,7 @@ void gfError(const char * title, const char * description);
 
 #ifdef GLFAST_IMPLEMENTATION
 
-gpu_buffer_t gfBufferCreateFromStruct(gpu_buffer_t tbo)
+gpu_storage_t gfStorageCreateFromStruct(gpu_storage_t tbo)
 {
   if(!tbo.format)
     gfError(__FUNCTION__, "Error: TBO format is 0");
@@ -544,6 +547,24 @@ gpu_texture_t gfCubemapCreateFromBmp(
   return texture;
 }
 
+gpu_sampler_t gfSamplerCreateFromStruct(gpu_sampler_t sampler)
+{
+  if(!sampler.aniso) sampler.aniso = 1;
+  if(!sampler.min)   sampler.min   = GL_LINEAR_MIPMAP_LINEAR;
+  if(!sampler.mag)   sampler.mag   = GL_LINEAR;
+  if(!sampler.wrap)  sampler.wrap  = GL_REPEAT;
+
+  glCreateSamplers(1, &sampler.id);
+  
+  glSamplerParameteri(sampler.id, GL_TEXTURE_MAX_ANISOTROPY, sampler.aniso);
+  glSamplerParameteri(sampler.id, GL_TEXTURE_MIN_FILTER, sampler.min);
+  glSamplerParameteri(sampler.id, GL_TEXTURE_MAG_FILTER, sampler.mag);
+  glSamplerParameteri(sampler.id, GL_TEXTURE_WRAP_S, sampler.wrap);
+  glSamplerParameteri(sampler.id, GL_TEXTURE_WRAP_T, sampler.wrap);
+
+  return sampler;
+}
+
 void gfTextureSetPixels(
   u32 texture_id,
   i32 texture_layer,
@@ -588,24 +609,6 @@ void gfTextureSaveToBmp(
   SDL_FreeSurface(bmp);
   
   SDL_free(pixels);
-}
-
-gpu_sampler_t gfSamplerCreateFromStruct(gpu_sampler_t sampler)
-{
-  if(!sampler.aniso) sampler.aniso = 1;
-  if(!sampler.min)   sampler.min   = GL_LINEAR_MIPMAP_LINEAR;
-  if(!sampler.mag)   sampler.mag   = GL_LINEAR;
-  if(!sampler.wrap)  sampler.wrap  = GL_REPEAT;
-
-  glCreateSamplers(1, &sampler.id);
-  
-  glSamplerParameteri(sampler.id, GL_TEXTURE_MAX_ANISOTROPY, sampler.aniso);
-  glSamplerParameteri(sampler.id, GL_TEXTURE_MIN_FILTER, sampler.min);
-  glSamplerParameteri(sampler.id, GL_TEXTURE_MAG_FILTER, sampler.mag);
-  glSamplerParameteri(sampler.id, GL_TEXTURE_WRAP_S, sampler.wrap);
-  glSamplerParameteri(sampler.id, GL_TEXTURE_WRAP_T, sampler.wrap);
-
-  return sampler;
 }
 
 u32 gfFboCreate(
