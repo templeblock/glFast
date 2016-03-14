@@ -11,7 +11,10 @@ i32 main()
   
   gfWindow(&sdl_window, &sdl_glcontext, 0, 0, "App", 1280, 720, 4);
   
-  gpu_storage_t mesh = gfStorageCreate(.format = xyz_f32, .count = 3);
+  gpu_storage_t mesh = {0};
+  mesh.format = xyz_f32;
+  mesh.count  = 3;
+  mesh = gfStorageCreateFromStruct(mesh);
   
   mesh.as_vec3[0].x = -0.5f;
   mesh.as_vec3[0].y = -0.5f;
@@ -30,7 +33,7 @@ i32 main()
   cmd[0].count = mesh.count;
   cmd[0].instance_count = 1;
   
-  char * vs_str = VERT_HEAD STR
+  const char * vs_str = VERT_HEAD STR
   (
     layout(binding = 0) uniform samplerBuffer in_pos;
     
@@ -41,7 +44,7 @@ i32 main()
     }
   );
   
-  char * fs_str = FRAG_HEAD STR
+  const char * fs_str = FRAG_HEAD STR
   (
     out vec4 color;
     
