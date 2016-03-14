@@ -28,7 +28,7 @@ i32 main()
   mesh.as_vec3[2].y = -0.5f;
   mesh.as_vec3[2].z =  0.0f;
   
-  gpu_cmd_t cmd[1] = {};
+  gpu_cmd_t cmd[1] = {0};
   
   cmd[0].count = mesh.count;
   cmd[0].instance_count = 1;
@@ -54,8 +54,8 @@ i32 main()
     }
   );
 
-  u32 vs = gfProgramCreateFromString(VERT, vs_str);
-  u32 fs = gfProgramCreateFromString(FRAG, fs_str);
+  u32 vs = gfProgramCreateFromString(GL_VERTEX_SHADER, vs_str);
+  u32 fs = gfProgramCreateFromString(GL_FRAGMENT_SHADER, fs_str);
   u32 pp = gfProgramPipelineCreate(vs, fs);
   
   u32 state_textures[16] =
@@ -67,7 +67,7 @@ i32 main()
   
   while(1)
   {
-    glClear(CLEAR_COLOR);
+    gfClear();
     gfDraw(pp, countof(cmd), cmd);
     
     SDL_Event event;

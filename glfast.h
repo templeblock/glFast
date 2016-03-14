@@ -321,18 +321,6 @@ typedef void (*GLPROGRAMUNIFORM4FVPROC)(u32 program, i32 location, i32 count, co
   "#extension GL_ARB_explicit_uniform_location : enable\n" \
   "layout(depth_unchanged) out float gl_FragDepth;\n"
 
-#define FBO GL_FRAMEBUFFER
-#define VERT GL_VERTEX_SHADER
-#define FRAG GL_FRAGMENT_SHADER
-
-#define DO_CULL GL_CULL_FACE
-#define DO_BLEND GL_BLEND
-#define DO_DEPTH GL_DEPTH_TEST
-#define DO_FBO_SRGB GL_FRAMEBUFFER_SRGB
-
-#define CLEAR_DEPTH GL_DEPTH_BUFFER_BIT
-#define CLEAR_COLOR GL_COLOR_BUFFER_BIT
-
 // TYPES ///////////////////////////////////////////////////////////////////////
 
 typedef struct
@@ -418,9 +406,11 @@ void gfTextureSetPixels(u32 texture_id, i32 texture_layer, i32 x, i32 y, i32 wid
 void gfTextureGetPixels(u32 texture_id, i32 texture_layer, i32 x, i32 y, i32 width, i32 height, u32 format, i32 pixels_bytes, void * pixels);
 void gfTextureSaveToBmp(u32 texture_id, i32 texture_layer, i32 width, i32 height, const char * bmp_filepath);
 u32 gfFboCreate(u32 depth_texture_id, i32 depth_texture_layer, i32 color_texture_count, const u32 * color_texture_ids, const i32 * color_texture_layers);
+void gfFboBind(u32 fbo_id);
 u32 gfProgramCreateFromFile(u32 shader_type, const char * shader_filepath);
 u32 gfProgramCreateFromString(u32 shader_type, const char * shader_string);
 u32 gfProgramPipelineCreate(u32 vert_program, u32 frag_program);
+void gfClear();
 void gfDraw(u32 program_pipeline, u32 gpu_cmd_count, const gpu_cmd_t * gpu_cmd);
 void gfFire(u32 program_pipeline, u32 count);
 void gfDebugCallback(u32 source, u32 type, u32 id, u32 severity, i32 length, const char * message, void * userdata);
@@ -690,15 +680,22 @@ u32 gfFboCreate(
   if(color_texture_count)
   {
     u32 attachments[color_texture_count];
+    
     for(u32 i = 0; i < color_texture_count; ++i)
     {
       attachments[i] = GL_COLOR_ATTACHMENT0 + i;
       glNamedFramebufferTextureLayer(fbo, GL_COLOR_ATTACHMENT0 + i, color_texture_ids[i], 0, color_texture_layers ? color_texture_layers[i] : 0);
     }
+    
     glNamedFramebufferDrawBuffers(fbo, color_texture_count, attachments);
   }
   
   return fbo;
+}
+
+void gfFboBind(u32 fbo_id)
+{
+  glBindFramebuffer(GL_FRAMEBUFFER, fbo_id);
 }
 
 u32 gfProgramCreateFromFile(
@@ -737,6 +734,11 @@ u32 gfProgramPipelineCreate(
   if(frag_program) glUseProgramStages(ppo, GL_FRAGMENT_SHADER_BIT, frag_program);
   
   return ppo;
+}
+
+void gfClear()
+{
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void gfDraw(

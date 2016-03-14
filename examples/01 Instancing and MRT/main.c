@@ -151,16 +151,16 @@ i32 main(i32 ArgCount, char ** Args)
     cubemap_px, cubemap_nx, cubemap_py, cubemap_ny, cubemap_pz, cubemap_nz
   );
   
-  u32 vs_mesh = gfProgramCreateFromFile(VERT, RESRC.vs_mesh);
-  u32 fs_mesh = gfProgramCreateFromFile(FRAG, RESRC.fs_mesh);
+  u32 vs_mesh = gfProgramCreateFromFile(GL_VERTEX_SHADER, RESRC.vs_mesh);
+  u32 fs_mesh = gfProgramCreateFromFile(GL_FRAGMENT_SHADER, RESRC.fs_mesh);
   u32 pp_mesh = gfProgramPipelineCreate(vs_mesh, fs_mesh);
   
-  u32 vs_quad = gfProgramCreateFromFile(VERT, RESRC.vs_quad);
-  u32 fs_quad = gfProgramCreateFromFile(FRAG, RESRC.fs_quad);
+  u32 vs_quad = gfProgramCreateFromFile(GL_VERTEX_SHADER, RESRC.vs_quad);
+  u32 fs_quad = gfProgramCreateFromFile(GL_FRAGMENT_SHADER, RESRC.fs_quad);
   u32 pp_quad = gfProgramPipelineCreate(vs_quad, fs_quad);
   
-  u32 vs_cubemap = gfProgramCreateFromFile(VERT, RESRC.vs_cubemap);
-  u32 fs_cubemap = gfProgramCreateFromFile(FRAG, RESRC.fs_cubemap);
+  u32 vs_cubemap = gfProgramCreateFromFile(GL_VERTEX_SHADER, RESRC.vs_cubemap);
+  u32 fs_cubemap = gfProgramCreateFromFile(GL_FRAGMENT_SHADER, RESRC.fs_cubemap);
   u32 pp_cubemap = gfProgramPipelineCreate(vs_cubemap, fs_cubemap);
   
   gpu_cmd_t cmd[3] = {};
@@ -249,9 +249,9 @@ i32 main(i32 ArgCount, char ** Args)
   SDL_SetRelativeMouseMode(1);
   u32 t_prev = SDL_GetTicks();
 
-  glEnable(DO_DEPTH);
-  glEnable(DO_BLEND);
-  glEnable(DO_CULL);
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
+  glEnable(GL_BLEND);
 
   while(1)
   {
@@ -298,18 +298,18 @@ i32 main(i32 ArgCount, char ** Args)
     for(u32 i = 0; i < 90; ++i)
       ins_pos.as_vec3[i].y = (f32)sin((t_curr * 0.0015f) + (i * 0.5f)) * 0.3f;
     
-    glBindFramebuffer(FBO, fbo);
-      glClear(CLEAR_COLOR | CLEAR_DEPTH);
+    gfFboBind(fbo);
+      gfClear();
       gfDraw(pp_mesh, countof(cmd), cmd);
-    glBindFramebuffer(FBO, 0);
+    gfFboBind(0);
     
-    glClear(CLEAR_COLOR | CLEAR_DEPTH);
+    gfClear();
     
     if(!show_pass)
     {
-      glDisable(DO_DEPTH);
+      glDisable(GL_DEPTH_TEST);
         gfFire(pp_cubemap, 36);
-      glEnable(DO_DEPTH);
+      glEnable(GL_DEPTH_TEST);
     }
     
     gfFire(pp_quad, 6);
