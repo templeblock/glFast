@@ -30,12 +30,6 @@
 
 #include <SDL2/SDL.h>
 
-// GLFAST //////////////////////////////////////////////////////////////////////
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // RUST TYPES //////////////////////////////////////////////////////////////////
 
 #ifndef i8
@@ -380,9 +374,6 @@ void gfCheckExtensions(i32 extensions_count, const char ** extensions);
 void gfWindow(SDL_Window ** sdl_window, SDL_GLContext * sdl_glcontext, u32 sdl_init_flags, u32 sdl_window_flags, const char * window_title, i32 window_width, i32 window_height, i32 msaa_samples);
 void gfError(const char * title, const char * description);
 
-#ifdef __cplusplus
-}
-#endif
 #endif // GLFAST_H_
 
 // IMPLEMENTATION //////////////////////////////////////////////////////////////
