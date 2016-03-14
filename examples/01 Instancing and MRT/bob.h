@@ -230,10 +230,10 @@ bob_t gfBobCreate(
     
     gfBobRead(
       bob_paths[i],
-      bob_bytes_vp[i], &bob_ptr_vp,
-      bob_bytes_vt[i], &bob_ptr_vt,
-      bob_bytes_vn[i], &bob_ptr_vn,
-      bob_bytes_id[i], &bob_ptr_id
+      bob_bytes_vp[i], (void **)&bob_ptr_vp,
+      bob_bytes_vt[i], (void **)&bob_ptr_vt,
+      bob_bytes_vn[i], (void **)&bob_ptr_vn,
+      bob_bytes_id[i], (void **)&bob_ptr_id
     );
     
     vp_first += bob_bytes_vp[i];

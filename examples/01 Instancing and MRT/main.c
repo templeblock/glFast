@@ -292,9 +292,8 @@ i32 main(i32 ArgCount, char ** Args)
     glProgramUniform4fv(vs_mesh, 2, 1, &cam_prj.x);
     glProgramUniform3fv(fs_mesh, 0, 1, &cam_pos.x);
     glProgramUniform1iv(fs_mesh, 1, 1, &show_pass);
-    glProgramUniform3fv(vs_cubemap, 0, 1, &cam_pos.x);
-    glProgramUniform4fv(vs_cubemap, 1, 1, &cam_rot.x);
-    glProgramUniform4fv(vs_cubemap, 2, 1, &cam_prj.x);
+    glProgramUniform4fv(vs_cubemap, 0, 1, &cam_rot.x);
+    glProgramUniform4fv(vs_cubemap, 1, 1, &cam_prj.x);
     
     for(u32 i = 0; i < 90; ++i)
       ins_pos.as_vec3[i].y = (f32)sin((t_curr * 0.0015f) + (i * 0.5f)) * 0.3f;

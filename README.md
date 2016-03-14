@@ -7,7 +7,7 @@ glFast is a public domain header-only C library that uses only 40 modern DSA AZD
 
 The contract:
 
- * SDL2, desktop OpenGL and Linux only. Doesn't support Windows, OS X, OpenGL ES or WebGL.
+ * SDL2, desktop OpenGL, Linux and Windows only. Doesn't support OS X, OpenGL ES or WebGL.
  * GPU memory is immutable. Once allocated you can't resize it, but you still can change its content.
  * No multithreaded or asynchronous CPU<->GPU interactions. No barriers and sync points except for glFinish call.
  * CPU sends data to GPU. GPU can't send data back to CPU, with an exception of reading textures from GPU to CPU.

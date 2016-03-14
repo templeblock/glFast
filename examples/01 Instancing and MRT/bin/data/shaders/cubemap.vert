@@ -64,9 +64,8 @@ vec4 proj(vec3 mv, vec4 p)
   return vec4(mv.xy * p.xy, mv.z * p.z + p.w, -mv.z);
 }
 
-layout(location = 0) uniform vec3 cam_pos;
-layout(location = 1) uniform vec4 cam_rot;
-layout(location = 2) uniform vec4 cam_prj;
+layout(location = 0) uniform vec4 cam_rot;
+layout(location = 1) uniform vec4 cam_prj;
 
 smooth out vec3 vs_position;
 

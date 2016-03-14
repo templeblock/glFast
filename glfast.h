@@ -28,6 +28,10 @@
 #ifndef GLFAST_H_
 #define GLFAST_H_
 
+#ifndef SDL_MAIN_HANDLED
+#define SDL_MAIN_HANDLED 1
+#endif
+
 #include <SDL2/SDL.h>
 
 // GLFAST //////////////////////////////////////////////////////////////////////
