@@ -131,10 +131,10 @@ bob_t gfBobCreate(
   bobs.uv        .format =  xy_f32;
   bobs.normal    .format = xyz_f32;
   
-  u32 bob_bytes_vp[bob_count];
-  u32 bob_bytes_vt[bob_count];
-  u32 bob_bytes_vn[bob_count];
-  u32 bob_bytes_id[bob_count];
+  u32 * bob_bytes_vp = (u32 *)SDL_malloc(bob_count * sizeof(u32));
+  u32 * bob_bytes_vt = (u32 *)SDL_malloc(bob_count * sizeof(u32));
+  u32 * bob_bytes_vn = (u32 *)SDL_malloc(bob_count * sizeof(u32));
+  u32 * bob_bytes_id = (u32 *)SDL_malloc(bob_count * sizeof(u32));
   
   for(u32 i = 0; i < bob_count; ++i)
   {
@@ -241,6 +241,11 @@ bob_t gfBobCreate(
     vn_first += bob_bytes_vn[i];
     id_first += bob_bytes_id[i];
   }
+  
+  SDL_free(bob_bytes_vp);
+  SDL_free(bob_bytes_vt);
+  SDL_free(bob_bytes_vn);
+  SDL_free(bob_bytes_id);
   
   return bobs;
 }
