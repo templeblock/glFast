@@ -108,7 +108,7 @@ bob_t gfBobCreate(
   u32 bob_count,
   const char ** bob_paths)
 {
-  bob_t bobs = {};
+  bob_t bobs = {0};
 
   bobs.first.format = x_u32;
   bobs.count.format = x_u32;

@@ -163,7 +163,7 @@ i32 main(i32 ArgCount, char ** Args)
   u32 fs_cubemap = gfProgramCreateFromFile(GL_FRAGMENT_SHADER, RESRC.fs_cubemap);
   u32 pp_cubemap = gfProgramPipelineCreate(vs_cubemap, fs_cubemap);
   
-  gpu_cmd_t cmd[3] = {};
+  gpu_cmd_t cmd[3] = {0};
   
   cmd[0].first = meshes.first.as_u32[0];
   cmd[1].first = meshes.first.as_u32[1];
@@ -236,8 +236,8 @@ i32 main(i32 ArgCount, char ** Args)
   
   vec3 cam_pos = {23.518875f, 5.673130f, 26.649000f};
   vec4 cam_rot = {-0.351835f, 0.231701f, 0.090335f, 0.902411f};
-  vec4 cam_prj = {};
-  mat3 cam_mat = {};
+  vec4 cam_prj = {0.f};
+  mat3 cam_mat = {0.f};
 
   Perspective(
     &cam_prj.x,

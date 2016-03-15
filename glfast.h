@@ -671,6 +671,9 @@ u32 gfFboCreate(
   const u32 * color_texture_ids,
   const i32 * color_texture_layers)
 {
+  if(color_texture_count < 0 || color_texture_count > 8)
+    gfError(__FUNCTION__, "Error: Number of color attachments must be in [0,8]");
+
   u32 fbo;
   glCreateFramebuffers(1, &fbo);
   
@@ -679,14 +682,12 @@ u32 gfFboCreate(
   
   if(color_texture_count)
   {
-    // 8 is the maximum number of color attachments in practice
-    if (color_texture_count < 0 || color_texture_count > 8) gfError("FBO error", "Number of color attachments must be in [0,8]");
-    u32 attachments[8];
+    u32 attachments[8] = {0};
     
     for(i32 i = 0; i < color_texture_count; ++i)
     {
-      attachments[i] = GL_COLOR_ATTACHMENT0 + i;
-      glNamedFramebufferTextureLayer(fbo, GL_COLOR_ATTACHMENT0 + i, color_texture_ids[i], 0, color_texture_layers ? color_texture_layers[i] : 0);
+      attachments[i] = GL_COLOR_ATTACHMENT0 + (u32)i;
+      glNamedFramebufferTextureLayer(fbo, GL_COLOR_ATTACHMENT0 + (u32)i, color_texture_ids[i], 0, color_texture_layers ? color_texture_layers[i] : 0);
     }
     
     glNamedFramebufferDrawBuffers(fbo, color_texture_count, attachments);
@@ -709,9 +710,9 @@ u32 gfProgramCreateFromFile(
   SDL_RWseek(fd, 0, RW_SEEK_END);
   u32 bytes = (u32)SDL_RWtell(fd);
   SDL_RWseek(fd, 0, RW_SEEK_SET);
-  char* src = (char*)SDL_malloc(bytes + 1);
+  char * src = (char *)SDL_malloc(bytes + 1);
   src[bytes] = 0;
-  SDL_RWread(fd, &src, bytes, 1);
+  SDL_RWread(fd, src, bytes, 1);
   SDL_RWclose(fd);
   char * shader_string = &src[0];
   
