@@ -327,14 +327,14 @@ typedef struct
 {
   union
   {
-    u8   * ptr;
-    i8   * as_i8;
-    u8   * as_u8;
-    i16  * as_i16;
-    u16  * as_u16;
-    i32  * as_i32;
-    u32  * as_u32;
-    f32  * as_f32;
+    u8  * ptr;
+    i8  * as_i8;
+    u8  * as_u8;
+    i16 * as_i16;
+    u16 * as_u16;
+    i32 * as_i32;
+    u32 * as_u32;
+    f32 * as_f32;
     struct
     {
       union { f32 x; f32 u; };
@@ -714,9 +714,8 @@ u32 gfProgramCreateFromFile(
   src[bytes] = 0;
   SDL_RWread(fd, src, bytes, 1);
   SDL_RWclose(fd);
-  char * shader_string = &src[0];
   
-  uint32_t program = glCreateShaderProgramv(shader_type, 1, (const char **)&shader_string);
+  uint32_t program = glCreateShaderProgramv(shader_type, 1, (const char **)&src);
 
   SDL_free(src);
   return program;
