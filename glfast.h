@@ -304,14 +304,16 @@ typedef void (*GLPROGRAMUNIFORM4FVPROC)(u32 program, i32 location, i32 count, co
 #define depth_b24 GL_DEPTH_COMPONENT24
 #define depth_b32 GL_DEPTH_COMPONENT32
 
-#define VERT_HEAD \
+#define GF_TO_STRING(x) #x
+
+#define GF_VERT_HEAD \
   "#version 330\n" \
   "#extension GL_ARB_shader_precision          : enable\n" \
   "#extension GL_ARB_shading_language_420pack  : enable\n" \
   "#extension GL_ARB_explicit_uniform_location : enable\n" \
   "out gl_PerVertex { vec4 gl_Position; };\n"
 
-#define FRAG_HEAD \
+#define GF_FRAG_HEAD \
   "#version 330\n" \
   "#extension GL_ARB_shader_precision          : enable\n" \
   "#extension GL_ARB_conservative_depth        : enable\n" \

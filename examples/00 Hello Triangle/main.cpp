@@ -1,7 +1,6 @@
 #define GLFAST_IMPLEMENTATION
 #include "../../glfast.h"
 
-#define STR(x) #x
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 
 i32 main()
@@ -29,11 +28,10 @@ i32 main()
   mesh.as_vec3[2].z =  0.0f;
   
   gpu_cmd_t cmd[1] = {0};
-  
   cmd[0].count = mesh.count;
   cmd[0].instance_count = 1;
   
-  const char * vs_str = VERT_HEAD STR
+  const char * vs_str = GF_VERT_HEAD GF_TO_STRING
   (
     layout(binding = 0) uniform samplerBuffer in_pos;
     
@@ -44,7 +42,7 @@ i32 main()
     }
   );
   
-  const char * fs_str = FRAG_HEAD STR
+  const char * fs_str = GF_FRAG_HEAD GF_TO_STRING
   (
     out vec4 color;
     
