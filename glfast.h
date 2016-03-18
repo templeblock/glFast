@@ -220,47 +220,6 @@ void (*glProgramUniform2fv)(u32 program, i32 location, i32 count, const f32 * va
 void (*glProgramUniform3fv)(u32 program, i32 location, i32 count, const f32 * value);
 void (*glProgramUniform4fv)(u32 program, i32 location, i32 count, const f32 * value);
 
-typedef void (*GLCLEARPROC)(u32 mask);
-typedef void (*GLFINISHPROC)();
-typedef void (*GLENABLEPROC)(u32 cap);
-typedef void (*GLDISABLEPROC)(u32 cap);
-typedef void (*GLVIEWPORTPROC)(i32 x, i32 y, i32 width, i32 height);
-typedef void (*GLCREATEBUFFERSPROC)(i32 n, u32 * buffers);
-typedef void (*GLCREATETEXTURESPROC)(u32 target, i32 n, u32 * textures);
-typedef void (*GLCREATESAMPLERSPROC)(i32 n, u32 * samplers);
-typedef void (*GLCREATEFRAMEBUFFERSPROC)(i32 n, u32 * framebuffers);
-typedef u32 (*GLCREATESHADERPROGRAMVPROC)(u32 type, i32 count, const char ** strings);
-typedef void (*GLCREATEPROGRAMPIPELINESPROC)(i32 n, u32 * pipelines);
-typedef void (*GLDELETEBUFFERSPROC)(i32 n, const u32 * buffers);
-typedef void (*GLDELETETEXTURESPROC)(i32 n, const u32 * textures);
-typedef void (*GLDELETESAMPLERSPROC)(i32 n, const u32 * samplers);
-typedef void (*GLDELETEFRAMEBUFFERSPROC)(i32 n, const u32 * framebuffers);
-typedef void (*GLDELETEPROGRAMPROC)(u32 program);
-typedef void (*GLDELETEPROGRAMPIPELINESPROC)(i32 n, const u32 * pipelines);
-typedef void (*GLBINDTEXTURESPROC)(u32 first, i32 count, const u32 * textures);
-typedef void (*GLBINDSAMPLERSPROC)(u32 first, i32 count, const u32 * samplers);
-typedef void (*GLBINDFRAMEBUFFERPROC)(u32 target, u32 framebuffer);
-typedef void (*GLBINDPROGRAMPIPELINEPROC)(u32 pipeline);
-typedef void (*GLNAMEDBUFFERSTORAGEPROC)(u32 buffer, ptrdiff_t size, const void * data, u32 flags);
-typedef void * (*GLMAPNAMEDBUFFERRANGEPROC)(u32 buffer, ptrdiff_t offset, ptrdiff_t length, u32 access);
-typedef void (*GLTEXTUREBUFFERPROC)(u32 texture, u32 internalformat, u32 buffer);
-typedef void (*GLTEXTURESTORAGE3DPROC)(u32 texture, i32 levels, u32 internalformat, i32 width, i32 height, i32 depth);
-typedef void (*GLTEXTURESUBIMAGE3DPROC)(u32 texture, i32 level, i32 xoffset, i32 yoffset, i32 zoffset, i32 width, i32 height, i32 depth, u32 format, u32 type, const void * pixels);
-typedef void (*GLGETTEXTURESUBIMAGEPROC)(u32 texture, i32 level, i32 xoffset, i32 yoffset, i32 zoffset, i32 width, i32 height, i32 depth, u32 format, u32 type, i32 bufSize, void * pixels);
-typedef void (*GLGENERATETEXTUREMIPMAPPROC)(u32 texture);
-typedef void (*GLSAMPLERPARAMETERIPROC)(u32 sampler, u32 pname, i32 param);
-typedef void (*GLNAMEDFRAMEBUFFERTEXTURELAYERPROC)(u32 framebuffer, u32 attachment, u32 texture, i32 level, i32 layer);
-typedef void (*GLNAMEDFRAMEBUFFERDRAWBUFFERSPROC)(u32 framebuffer, i32 n, const u32 * bufs);
-typedef void (*GLUSEPROGRAMSTAGESPROC)(u32 pipeline, u32 stages, u32 program);
-typedef void (*GLDRAWARRAYSINSTANCEDBASEINSTANCEPROC)(u32 mode, i32 first, i32 count, i32 instancecount, u32 baseinstance);
-typedef void (*GLPROGRAMUNIFORM1UIVPROC)(u32 program, i32 location, i32 count, const u32 * value);
-typedef void (*GLPROGRAMUNIFORM1IVPROC)(u32 program, i32 location, i32 count, const i32 * value);
-typedef void (*GLPROGRAMUNIFORM1DVPROC)(u32 program, i32 location, i32 count, const f64 * value);
-typedef void (*GLPROGRAMUNIFORM1FVPROC)(u32 program, i32 location, i32 count, const f32 * value);
-typedef void (*GLPROGRAMUNIFORM2FVPROC)(u32 program, i32 location, i32 count, const f32 * value);
-typedef void (*GLPROGRAMUNIFORM3FVPROC)(u32 program, i32 location, i32 count, const f32 * value);
-typedef void (*GLPROGRAMUNIFORM4FVPROC)(u32 program, i32 location, i32 count, const f32 * value);
-
 // HELPERS /////////////////////////////////////////////////////////////////////
 
 #define x_b8      GL_R8
@@ -717,7 +676,7 @@ u32 gfProgramCreateFromFile(
   SDL_RWread(fd, src, bytes, 1);
   SDL_RWclose(fd);
   
-  uint32_t program = glCreateShaderProgramv(shader_type, 1, (const char **)&src);
+  u32 program = glCreateShaderProgramv(shader_type, 1, (const char **)&src);
 
   SDL_free(src);
   return program;
@@ -910,61 +869,55 @@ void gfWindow(
   
   gfCheckExtensions(sizeof(extensions) / sizeof(extensions[0]), extensions);
 
-  glClear = (GLCLEARPROC)SDL_GL_GetProcAddress("glClear");
-  glFinish = (GLFINISHPROC)SDL_GL_GetProcAddress("glFinish");
-  glEnable = (GLENABLEPROC)SDL_GL_GetProcAddress("glEnable");
-  glDisable = (GLDISABLEPROC)SDL_GL_GetProcAddress("glDisable");
-  glViewport = (GLVIEWPORTPROC)SDL_GL_GetProcAddress("glViewport");
-  glCreateBuffers = (GLCREATEBUFFERSPROC)SDL_GL_GetProcAddress("glCreateBuffers");
-  glCreateTextures = (GLCREATETEXTURESPROC)SDL_GL_GetProcAddress("glCreateTextures");
-  glCreateSamplers = (GLCREATESAMPLERSPROC)SDL_GL_GetProcAddress("glCreateSamplers");
-  glCreateFramebuffers = (GLCREATEFRAMEBUFFERSPROC)SDL_GL_GetProcAddress("glCreateFramebuffers");
-  glCreateShaderProgramv = (GLCREATESHADERPROGRAMVPROC)SDL_GL_GetProcAddress("glCreateShaderProgramv");
-  glCreateProgramPipelines = (GLCREATEPROGRAMPIPELINESPROC)SDL_GL_GetProcAddress("glCreateProgramPipelines");
-  glDeleteBuffers = (GLDELETEBUFFERSPROC)SDL_GL_GetProcAddress("glDeleteBuffers");
-  glDeleteTextures = (GLDELETETEXTURESPROC)SDL_GL_GetProcAddress("glDeleteTextures");
-  glDeleteSamplers = (GLDELETESAMPLERSPROC)SDL_GL_GetProcAddress("glDeleteSamplers");
-  glDeleteFramebuffers = (GLDELETEFRAMEBUFFERSPROC)SDL_GL_GetProcAddress("glDeleteFramebuffers");
-  glDeleteProgram = (GLDELETEPROGRAMPROC)SDL_GL_GetProcAddress("glDeleteProgram");
-  glDeleteProgramPipelines = (GLDELETEPROGRAMPIPELINESPROC)SDL_GL_GetProcAddress("glDeleteProgramPipelines");
-  glBindTextures = (GLBINDTEXTURESPROC)SDL_GL_GetProcAddress("glBindTextures");
-  glBindSamplers = (GLBINDSAMPLERSPROC)SDL_GL_GetProcAddress("glBindSamplers");
-  glBindFramebuffer = (GLBINDFRAMEBUFFERPROC)SDL_GL_GetProcAddress("glBindFramebuffer");
-  glBindProgramPipeline = (GLBINDPROGRAMPIPELINEPROC)SDL_GL_GetProcAddress("glBindProgramPipeline");
-  glNamedBufferStorage = (GLNAMEDBUFFERSTORAGEPROC)SDL_GL_GetProcAddress("glNamedBufferStorage");
-  glMapNamedBufferRange = (GLMAPNAMEDBUFFERRANGEPROC)SDL_GL_GetProcAddress("glMapNamedBufferRange");
-  glTextureBuffer = (GLTEXTUREBUFFERPROC)SDL_GL_GetProcAddress("glTextureBuffer");
-  glTextureStorage3D = (GLTEXTURESTORAGE3DPROC)SDL_GL_GetProcAddress("glTextureStorage3D");
-  glTextureSubImage3D = (GLTEXTURESUBIMAGE3DPROC)SDL_GL_GetProcAddress("glTextureSubImage3D");
-  glGetTextureSubImage = (GLGETTEXTURESUBIMAGEPROC)SDL_GL_GetProcAddress("glGetTextureSubImage");
-  glGenerateTextureMipmap = (GLGENERATETEXTUREMIPMAPPROC)SDL_GL_GetProcAddress("glGenerateTextureMipmap");
-  glSamplerParameteri = (GLSAMPLERPARAMETERIPROC)SDL_GL_GetProcAddress("glSamplerParameteri");
-  glNamedFramebufferTextureLayer = (GLNAMEDFRAMEBUFFERTEXTURELAYERPROC)SDL_GL_GetProcAddress("glNamedFramebufferTextureLayer");
-  glNamedFramebufferDrawBuffers = (GLNAMEDFRAMEBUFFERDRAWBUFFERSPROC)SDL_GL_GetProcAddress("glNamedFramebufferDrawBuffers");
-  glUseProgramStages = (GLUSEPROGRAMSTAGESPROC)SDL_GL_GetProcAddress("glUseProgramStages");
-  glDrawArraysInstancedBaseInstance = (GLDRAWARRAYSINSTANCEDBASEINSTANCEPROC)SDL_GL_GetProcAddress("glDrawArraysInstancedBaseInstance");
-  glProgramUniform1uiv = (GLPROGRAMUNIFORM1UIVPROC)SDL_GL_GetProcAddress("glProgramUniform1uiv");
-  glProgramUniform1iv = (GLPROGRAMUNIFORM1IVPROC)SDL_GL_GetProcAddress("glProgramUniform1iv");
-  glProgramUniform1dv = (GLPROGRAMUNIFORM1DVPROC)SDL_GL_GetProcAddress("glProgramUniform1dv");
-  glProgramUniform1fv = (GLPROGRAMUNIFORM1FVPROC)SDL_GL_GetProcAddress("glProgramUniform1fv");
-  glProgramUniform2fv = (GLPROGRAMUNIFORM2FVPROC)SDL_GL_GetProcAddress("glProgramUniform2fv");
-  glProgramUniform3fv = (GLPROGRAMUNIFORM3FVPROC)SDL_GL_GetProcAddress("glProgramUniform3fv");
-  glProgramUniform4fv = (GLPROGRAMUNIFORM4FVPROC)SDL_GL_GetProcAddress("glProgramUniform4fv");
+  glClear = (void (*)(u32))SDL_GL_GetProcAddress("glClear");
+  glFinish = (void (*)())SDL_GL_GetProcAddress("glFinish");
+  glEnable = (void (*)(u32))SDL_GL_GetProcAddress("glEnable");
+  glDisable = (void (*)(u32))SDL_GL_GetProcAddress("glDisable");
+  glViewport = (void (*)(i32, i32, i32, i32))SDL_GL_GetProcAddress("glViewport");
+  glCreateBuffers = (void (*)(i32, u32 *))SDL_GL_GetProcAddress("glCreateBuffers");
+  glCreateTextures = (void (*)(u32, i32, u32 *))SDL_GL_GetProcAddress("glCreateTextures");
+  glCreateSamplers = (void (*)(i32, u32 *))SDL_GL_GetProcAddress("glCreateSamplers");
+  glCreateFramebuffers = (void (*)(i32, u32 *))SDL_GL_GetProcAddress("glCreateFramebuffers");
+  glCreateShaderProgramv = (u32 (*)(u32, i32, const char **))SDL_GL_GetProcAddress("glCreateShaderProgramv");
+  glCreateProgramPipelines = (void (*)(i32, u32 *))SDL_GL_GetProcAddress("glCreateProgramPipelines");
+  glDeleteBuffers = (void (*)(i32, const u32 *))SDL_GL_GetProcAddress("glDeleteBuffers");
+  glDeleteTextures = (void (*)(i32, const u32 *))SDL_GL_GetProcAddress("glDeleteTextures");
+  glDeleteSamplers = (void (*)(i32, const u32 *))SDL_GL_GetProcAddress("glDeleteSamplers");
+  glDeleteFramebuffers = (void (*)(i32, const u32 *))SDL_GL_GetProcAddress("glDeleteFramebuffers");
+  glDeleteProgram = (void (*)(u32))SDL_GL_GetProcAddress("glDeleteProgram");
+  glDeleteProgramPipelines = (void (*)(i32, const u32 *))SDL_GL_GetProcAddress("glDeleteProgramPipelines");
+  glBindTextures = (void (*)(u32, i32, const u32 *))SDL_GL_GetProcAddress("glBindTextures");
+  glBindSamplers = (void (*)(u32, i32, const u32 *))SDL_GL_GetProcAddress("glBindSamplers");
+  glBindFramebuffer = (void (*)(u32, u32))SDL_GL_GetProcAddress("glBindFramebuffer");
+  glBindProgramPipeline = (void (*)(u32))SDL_GL_GetProcAddress("glBindProgramPipeline");
+  glNamedBufferStorage = (void (*)(u32, ptrdiff_t, const void *, u32))SDL_GL_GetProcAddress("glNamedBufferStorage");
+  glMapNamedBufferRange = (void *(*)(u32, ptrdiff_t, ptrdiff_t, u32))SDL_GL_GetProcAddress("glMapNamedBufferRange");
+  glTextureBuffer = (void (*)(u32, u32, u32))SDL_GL_GetProcAddress("glTextureBuffer");
+  glTextureStorage3D = (void (*)(u32, i32, u32, i32, i32, i32))SDL_GL_GetProcAddress("glTextureStorage3D");
+  glTextureSubImage3D = (void (*)(u32, i32, i32, i32, i32, i32, i32, i32, u32, u32, const void *))SDL_GL_GetProcAddress("glTextureSubImage3D");
+  glGetTextureSubImage = (void (*)(u32, i32, i32, i32, i32, i32, i32, i32, u32, u32, i32, void *))SDL_GL_GetProcAddress("glGetTextureSubImage");
+  glGenerateTextureMipmap = (void (*)(u32))SDL_GL_GetProcAddress("glGenerateTextureMipmap");
+  glSamplerParameteri = (void (*)(u32, u32, i32))SDL_GL_GetProcAddress("glSamplerParameteri");
+  glNamedFramebufferTextureLayer = (void (*)(u32, u32, u32, i32, i32))SDL_GL_GetProcAddress("glNamedFramebufferTextureLayer");
+  glNamedFramebufferDrawBuffers = (void (*)(u32, i32, const u32 *))SDL_GL_GetProcAddress("glNamedFramebufferDrawBuffers");
+  glUseProgramStages = (void (*)(u32, u32, u32))SDL_GL_GetProcAddress("glUseProgramStages");
+  glDrawArraysInstancedBaseInstance = (void (*)(u32, i32, i32, i32, u32))SDL_GL_GetProcAddress("glDrawArraysInstancedBaseInstance");
+  glProgramUniform1uiv = (void (*)(u32, i32, i32, const u32 *))SDL_GL_GetProcAddress("glProgramUniform1uiv");
+  glProgramUniform1iv = (void (*)(u32, i32, i32, const i32 *))SDL_GL_GetProcAddress("glProgramUniform1iv");
+  glProgramUniform1dv = (void (*)(u32, i32, i32, const f64 *))SDL_GL_GetProcAddress("glProgramUniform1dv");
+  glProgramUniform1fv = (void (*)(u32, i32, i32, const f32 *))SDL_GL_GetProcAddress("glProgramUniform1fv");
+  glProgramUniform2fv = (void (*)(u32, i32, i32, const f32 *))SDL_GL_GetProcAddress("glProgramUniform2fv");
+  glProgramUniform3fv = (void (*)(u32, i32, i32, const f32 *))SDL_GL_GetProcAddress("glProgramUniform3fv");
+  glProgramUniform4fv = (void (*)(u32, i32, i32, const f32 *))SDL_GL_GetProcAddress("glProgramUniform4fv");
   
-  typedef void (*GLCREATEVERTEXARRAYSPROC)(i32 n, u32 * arrays);
-  typedef void (*GLBINDVERTEXARRAYPROC)(u32 array);
-  typedef void (*GLBLENDFUNCPROC)(u32 sfactor, u32 dfactor);
-  typedef void (*GLDEPTHRANGEPROC)(f64 nearVal, f64 farVal);
-  
-  void (*glCreateVertexArrays)(i32 n, u32 * arrays) = (GLCREATEVERTEXARRAYSPROC)SDL_GL_GetProcAddress("glCreateVertexArrays");
-  void (*glBindVertexArray)(u32 array) = (GLBINDVERTEXARRAYPROC)SDL_GL_GetProcAddress("glBindVertexArray");
-  void (*glBlendFunc)(u32 sfactor, u32 dfactor) = (GLBLENDFUNCPROC)SDL_GL_GetProcAddress("glBlendFunc");
-  void (*glDepthRange)(f64 nearVal, f64 farVal) = (GLDEPTHRANGEPROC)SDL_GL_GetProcAddress("glDepthRange");
+  void (*glCreateVertexArrays)(i32 n, u32 * arrays) = (void (*)(i32, u32 *))SDL_GL_GetProcAddress("glCreateVertexArrays");
+  void (*glBindVertexArray)(u32 array) = (void (*)(u32))SDL_GL_GetProcAddress("glBindVertexArray");
+  void (*glBlendFunc)(u32 sfactor, u32 dfactor) = (void (*)(u32, u32))SDL_GL_GetProcAddress("glBlendFunc");
+  void (*glDepthRange)(f64 nearVal, f64 farVal) = (void (*)(f64, f64))SDL_GL_GetProcAddress("glDepthRange");
   
   #ifndef RELEASE
   typedef void (*GLDEBUGPROC)(u32 source, u32 type, u32 id, u32 severity, i32 length, const char * message, const void * userParam);
-  typedef void (*GLDEBUGMESSAGECALLBACKPROC)(GLDEBUGPROC callback, const void * userParam);
-  void (*glDebugMessageCallback)(GLDEBUGPROC callback, const void * userParam) = (GLDEBUGMESSAGECALLBACKPROC)SDL_GL_GetProcAddress("glDebugMessageCallback");
+  void (*glDebugMessageCallback)(GLDEBUGPROC callback, const void * userParam) = (void (*)(GLDEBUGPROC, const void *))SDL_GL_GetProcAddress("glDebugMessageCallback");
   glDebugMessageCallback((GLDEBUGPROC)gfDebugCallback, NULL);
   #endif
   
