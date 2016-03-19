@@ -363,8 +363,8 @@ gpu_texture_t gfTextureCreateFromStruct(gpu_texture_t texture);
 gpu_sampler_t gfSamplerCreateFromStruct(gpu_sampler_t sampler);
 gpu_texture_t gfTextureCreateFromBmp(i32 width, i32 height, i32 mipmap, i32 texture_count, const char ** texture_paths);
 gpu_texture_t gfCubemapCreateFromBmp(i32 width, i32 height, i32 mipmap, i32 texture_count, const char ** pos_x_texture_paths, const char ** neg_x_texture_paths, const char ** pos_y_texture_paths, const char ** neg_y_texture_paths, const char ** pos_z_texture_paths, const char ** neg_z_texture_paths);
-void gfTextureSetPixels(u32 texture_id, i32 texture_layer, i32 x, i32 y, i32 width, i32 height, u32 format, const void * data);
-void gfTextureGetPixels(u32 texture_id, i32 texture_layer, i32 x, i32 y, i32 width, i32 height, u32 format, i32 pixels_bytes, void * pixels);
+void gfTextureSetPixels(u32 texture_id, i32 texture_layer, i32 x, i32 y, i32 width, i32 height, u32 pixels_format, u32 pixels_type, const void * data);
+void gfTextureGetPixels(u32 texture_id, i32 texture_layer, i32 x, i32 y, i32 width, i32 height, u32 pixels_format, u32 pixels_type, i32 pixels_bytes, void * pixels);
 void gfTextureSaveToBmp(u32 texture_id, i32 texture_layer, i32 width, i32 height, const char * bmp_filepath);
 u32 gfFboCreate(u32 depth_texture_id, i32 depth_texture_layer, i32 color_texture_count, const u32 * color_texture_ids, const i32 * color_texture_layers);
 void gfFboBind(u32 fbo_id);
@@ -493,7 +493,7 @@ gpu_texture_t gfTextureCreateFromBmp(
   {
     SDL_Surface * bmp = SDL_LoadBMP(texture_paths[i]);
     if(!bmp) gfError("Error: File not found", texture_paths[i]);
-    gfTextureSetPixels(texture.id, i, 0, 0, texture.w, texture.h, GL_BGR, bmp->pixels);
+    gfTextureSetPixels(texture.id, i, 0, 0, texture.w, texture.h, GL_BGR, GL_UNSIGNED_BYTE, bmp->pixels);
     SDL_FreeSurface(bmp);
   }
 
@@ -541,12 +541,12 @@ gpu_texture_t gfCubemapCreateFromBmp(
     if(!bmp_pos_z) gfError("Error: File not found", pos_z_texture_paths[i]);
     if(!bmp_neg_z) gfError("Error: File not found", neg_z_texture_paths[i]);
     
-    gfTextureSetPixels(texture.id, i * 6 + 0, 0, 0, texture.w, texture.h, GL_BGR, bmp_pos_x->pixels);
-    gfTextureSetPixels(texture.id, i * 6 + 1, 0, 0, texture.w, texture.h, GL_BGR, bmp_neg_x->pixels);
-    gfTextureSetPixels(texture.id, i * 6 + 2, 0, 0, texture.w, texture.h, GL_BGR, bmp_pos_y->pixels);
-    gfTextureSetPixels(texture.id, i * 6 + 3, 0, 0, texture.w, texture.h, GL_BGR, bmp_neg_y->pixels);
-    gfTextureSetPixels(texture.id, i * 6 + 4, 0, 0, texture.w, texture.h, GL_BGR, bmp_pos_z->pixels);
-    gfTextureSetPixels(texture.id, i * 6 + 5, 0, 0, texture.w, texture.h, GL_BGR, bmp_neg_z->pixels);
+    gfTextureSetPixels(texture.id, i * 6 + 0, 0, 0, texture.w, texture.h, GL_BGR, GL_UNSIGNED_BYTE, bmp_pos_x->pixels);
+    gfTextureSetPixels(texture.id, i * 6 + 1, 0, 0, texture.w, texture.h, GL_BGR, GL_UNSIGNED_BYTE, bmp_neg_x->pixels);
+    gfTextureSetPixels(texture.id, i * 6 + 2, 0, 0, texture.w, texture.h, GL_BGR, GL_UNSIGNED_BYTE, bmp_pos_y->pixels);
+    gfTextureSetPixels(texture.id, i * 6 + 3, 0, 0, texture.w, texture.h, GL_BGR, GL_UNSIGNED_BYTE, bmp_neg_y->pixels);
+    gfTextureSetPixels(texture.id, i * 6 + 4, 0, 0, texture.w, texture.h, GL_BGR, GL_UNSIGNED_BYTE, bmp_pos_z->pixels);
+    gfTextureSetPixels(texture.id, i * 6 + 5, 0, 0, texture.w, texture.h, GL_BGR, GL_UNSIGNED_BYTE, bmp_neg_z->pixels);
     
     SDL_FreeSurface(bmp_pos_x);
     SDL_FreeSurface(bmp_neg_x);
@@ -586,10 +586,11 @@ void gfTextureSetPixels(
   i32 y,
   i32 width,
   i32 height,
-  u32 format,
+  u32 pixels_format,
+  u32 pixels_type,
   const void * pixels)
 {
-  glTextureSubImage3D(texture_id, 0, x, y, texture_layer, width, height, 1, format, GL_UNSIGNED_BYTE, pixels);
+  glTextureSubImage3D(texture_id, 0, x, y, texture_layer, width, height, 1, pixels_format, pixels_type, pixels);
 }
 
 void gfTextureGetPixels(
@@ -599,11 +600,12 @@ void gfTextureGetPixels(
   i32 y,
   i32 width,
   i32 height,
-  u32 format,
+  u32 pixels_format,
+  u32 pixels_type,
   i32 pixels_bytes,
   void * pixels)
 {
-  glGetTextureSubImage(texture_id, 0, x, y, texture_layer, width, height, 1, format, GL_UNSIGNED_BYTE, pixels_bytes, pixels);
+  glGetTextureSubImage(texture_id, 0, x, y, texture_layer, width, height, 1, pixels_format, pixels_type, pixels_bytes, pixels);
 }
 
 void gfTextureSaveToBmp(
@@ -616,7 +618,7 @@ void gfTextureSaveToBmp(
   i32  pixels_bytes = width * height * 3;
   u8 * pixels = (u8 *)SDL_malloc((u32)pixels_bytes);
   
-  gfTextureGetPixels(texture_id, texture_layer, 0, 0, width, height, GL_BGR, pixels_bytes, pixels);
+  gfTextureGetPixels(texture_id, texture_layer, 0, 0, width, height, GL_BGR, GL_UNSIGNED_BYTE, pixels_bytes, pixels);
   
   SDL_Surface * bmp = SDL_CreateRGBSurfaceFrom(pixels, width, height, 3 * 8, 3 * width, 0, 0, 0, 0);
   SDL_SaveBMP(bmp, bmp_filepath);
