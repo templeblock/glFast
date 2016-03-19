@@ -147,7 +147,13 @@ extern "C" {
 #define GL_RGBA 0x1908
 #define GL_BGR 0x80E0
 #define GL_BGRA 0x80E1
+#define GL_BYTE 0x1400
 #define GL_UNSIGNED_BYTE 0x1401
+#define GL_SHORT 0x1402
+#define GL_UNSIGNED_SHORT 0x1403
+#define GL_INT 0x1404
+#define GL_UNSIGNED_INT 0x1405
+#define GL_FLOAT 0x1406
 #define GL_NEAREST 0x2600
 #define GL_LINEAR 0x2601
 #define GL_NEAREST_MIPMAP_NEAREST 0x2700
