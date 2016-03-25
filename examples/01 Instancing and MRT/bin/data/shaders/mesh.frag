@@ -31,25 +31,29 @@ layout(location = 1) uniform int show_pass;
 
 layout(location = 0) out vec4 fbo_color;
 
-flat   in int  vs_id;
-smooth in vec2 vs_uv;
-smooth in vec3 vs_normal;
-smooth in vec3 vs_position;
+smooth in vec4 vs_iuv;
+smooth in vec4 vs_nor;
+smooth in vec4 vs_pos;
 
 void main()
 {
-  vec4 diffuse = texture(in_textures, vec3(vs_uv, vs_id));
-  vec4 reflect = texture(in_cubemaps, vec4(reflect((vs_position - cam_pos), vs_normal), 0));
+  int  id  = int(vs_iuv.x);
+  vec2 uv  = vs_iuv.yz;
+  vec3 nor = vs_nor.xyz;
+  vec3 pos = vs_pos.xyz;
+
+  vec4 diffuse = texture(in_textures, vec3(uv, id));
+  vec4 reflect = texture(in_cubemaps, vec4(reflect((pos - cam_pos), nor), 0));
   vec4 colours = vec4(0);
   
-  colours += vec4(1.0, 0.0, 0.0, 1.0) * when_eq(vec4(vs_id), vec4(0));
-  colours += vec4(0.0, 1.0, 0.0, 1.0) * when_eq(vec4(vs_id), vec4(1));
-  colours += vec4(0.0, 0.0, 1.0, 1.0) * when_eq(vec4(vs_id), vec4(2));
+  colours += vec4(1.0, 0.0, 0.0, 1.0) * when_eq(vec4(id), vec4(0));
+  colours += vec4(0.0, 1.0, 0.0, 1.0) * when_eq(vec4(id), vec4(1));
+  colours += vec4(0.0, 0.0, 1.0, 1.0) * when_eq(vec4(id), vec4(2));
   
-  fbo_color = mix((diffuse * 0.4) + (colours * 0.6), reflect, dot(vs_normal, normalize(vs_position - cam_pos)) * 0.5 + 0.5);
+  fbo_color = mix((diffuse * 0.4) + (colours * 0.6), reflect, dot(nor, normalize(pos - cam_pos)) * 0.5 + 0.5);
   
   if(show_pass == 1) fbo_color = diffuse;
   if(show_pass == 2) fbo_color = reflect;
   if(show_pass == 3) fbo_color = colours;
-  if(show_pass == 4) fbo_color = vec4(IntToColor(vs_id + 1), 1);
+  if(show_pass == 4) fbo_color = vec4(IntToColor(id + 1), 1);
 }

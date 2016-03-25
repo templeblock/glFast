@@ -29,15 +29,14 @@ layout(binding = 2) uniform isamplerBuffer in_attr_id;
 
 layout(binding = 3) uniform  samplerBuffer in_pos;
 layout(binding = 4) uniform  samplerBuffer in_uv;
-layout(binding = 5) uniform  samplerBuffer in_normal;
+layout(binding = 5) uniform  samplerBuffer in_nor;
 
 layout(binding = 6) uniform isamplerBuffer in_ins_first;
 layout(binding = 7) uniform  samplerBuffer in_ins_pos;
 
-flat   out int  vs_id;
-smooth out vec2 vs_uv;
-smooth out vec3 vs_normal;
-smooth out vec3 vs_position;
+smooth out vec4 vs_iuv;
+smooth out vec4 vs_nor;
+smooth out vec4 vs_pos;
 
 void main()
 {
@@ -45,21 +44,19 @@ void main()
   ivec3 attr_first = texelFetch(in_attr_first,  mesh_id).xyz;
   ivec3 attr_id    = texelFetch(in_attr_id, gl_VertexID).xyz;
   
-  vec3 pos    = texelFetch(in_pos,    attr_first.x + attr_id.x).xyz;
-  vec2 uv     = texelFetch(in_uv,     attr_first.y + attr_id.y).xy;
-  vec3 normal = texelFetch(in_normal, attr_first.z + attr_id.z).xyz;
+  vec3 pos = texelFetch(in_pos, attr_first.x + attr_id.x).xyz;
+  vec2 uv  = texelFetch(in_uv,  attr_first.y + attr_id.y).xy;
+  vec3 nor = texelFetch(in_nor, attr_first.z + attr_id.z).xyz;
   
   int  ins_first = texelFetch(in_ins_first, mesh_id).x;
   vec3 ins_pos   = texelFetch(in_ins_pos, ins_first + gl_InstanceID).xyz;
   
-  vec3 mv;
-  mv = pos + ins_pos;
+  vs_iuv = vec4(mesh_id, uv, 0);
+  vs_nor = vec4(nor, 0);
+  vs_pos = vec4(pos + ins_pos, 0);
   
-  vs_id       = mesh_id;
-  vs_uv       = uv;
-  vs_normal   = normal;
-  vs_position = mv;
-  
+  vec3 mv = pos;
+  mv += ins_pos;
   mv -= cam_pos;
   mv  = qrot(mv, qconj(cam_rot));
   gl_Position = proj(mv, cam_prj);
