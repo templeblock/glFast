@@ -280,11 +280,15 @@ i32 main(i32 ArgCount, char ** Args)
     );
     
     static int show_pass = 0;
-    if(key[SDL_SCANCODE_1]) show_pass = 0;
-    if(key[SDL_SCANCODE_2]) show_pass = 1;
-    if(key[SDL_SCANCODE_3]) show_pass = 2;
-    if(key[SDL_SCANCODE_4]) show_pass = 3;
-    if(key[SDL_SCANCODE_5]) show_pass = 4;
+    
+    if(key[SDL_SCANCODE_0]) show_pass = 0;
+    if(key[SDL_SCANCODE_1]) show_pass = 1;
+    if(key[SDL_SCANCODE_2]) show_pass = 2;
+    if(key[SDL_SCANCODE_3]) show_pass = 3;
+    if(key[SDL_SCANCODE_4]) show_pass = 4;
+    if(key[SDL_SCANCODE_5]) show_pass = 5;
+    if(key[SDL_SCANCODE_6]) show_pass = 6;
+    if(key[SDL_SCANCODE_7]) show_pass = 7;
     
     glProgramUniform3fv(vs_mesh, 0, 1, &cam_pos.x);
     glProgramUniform4fv(vs_mesh, 1, 1, &cam_rot.x);

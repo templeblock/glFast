@@ -53,4 +53,7 @@ void main()
   if(show_pass == 2) fbo_color = reflect;
   if(show_pass == 3) fbo_color = colours;
   if(show_pass == 4) fbo_color = vec4(IntToColor(id + 1), 1);
+  if(show_pass == 5) fbo_color = vec4(uv, 0, 1);
+  if(show_pass == 6) fbo_color = vec4(nor, 1);
+  if(show_pass == 7) fbo_color = vec4(pos, 1);
 }
