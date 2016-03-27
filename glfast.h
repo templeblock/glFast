@@ -804,7 +804,7 @@ void gfCheckExtensions(
   for(i32 i = 0; i < extensions_count; ++i)
   {
     if(!SDL_GL_ExtensionSupported(extensions[i]))
-      gfError("Error: Unsupported OpenGL Extension", extensions[i]);
+      SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error: Unsupported OpenGL Extension", extensions[i], NULL);
   }
 }
 
