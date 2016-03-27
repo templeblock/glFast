@@ -29,7 +29,7 @@ i32 main()
   
   const char * vs_str = GF_VERT_HEAD GF_TO_STRING
   (
-    const vec2 pos[] = vec2[]
+    const vec2 quad[] = vec2[]
     (
       vec2( -1.0, -1.0 ),
       vec2(  1.0, -1.0 ),
@@ -41,28 +41,28 @@ i32 main()
     
     void main()
     {
-      gl_Position = vec4(pos[gl_VertexID], 0, 1);
+      gl_Position = vec4(quad[gl_VertexID], 0, 1);
     }
   );
   
   const char * fs_str = GF_FRAG_HEAD GF_TO_STRING
   (
-    layout(binding = 0) uniform samplerBuffer mat_1;
-    layout(binding = 1) uniform samplerBuffer mat_2;
+    layout(binding = 0) uniform samplerBuffer s_mat_1;
+    layout(binding = 1) uniform samplerBuffer s_mat_2;
     
-    layout(location = 0) out vec4 mat_out;
+    layout(location = 0) out vec4 fbo_color;
     
     void main()
     {
       int row = int(floor(gl_FragCoord.x));
       int col = int(floor(gl_FragCoord.y));
       
-      float mat_1_elem = texelFetch(mat_1, col * 4096 + row).x;
-      float mat_2_elem = texelFetch(mat_2, col * 4096 + row).x;
+      float mat_1 = texelFetch(s_mat_1, col * 4096 + row).x;
+      float mat_2 = texelFetch(s_mat_2, col * 4096 + row).x;
       
-      float mat_sum = mat_1_elem + mat_2_elem;
+      float mat_sum = mat_1 + mat_2;
       
-      mat_out = vec4(mat_sum, 0, 0, 0);
+      fbo_color = vec4(mat_sum, 0, 0, 0);
     }
   );
   
@@ -70,11 +70,11 @@ i32 main()
   u32 fs = gfProgramCreateFromString(GL_FRAGMENT_SHADER, fs_str);
   u32 pp = gfProgramPipelineCreate(vs, fs);
   
-  gpu_texture_t mat_out = gfTextureCreate(.w = dim_x, dim_y, .format = rgba_f32);
+  gpu_texture_t fbo_color = gfTextureCreate(.w = dim_x, dim_y, .format = rgba_f32);
   
   u32 fbo_colors[] =
   {
-    [0] = mat_out.id,
+    [0] = fbo_color.id,
   };
   
   u32 fbo = gfFboCreate(0, 0, countof(fbo_colors), fbo_colors, 0);
@@ -83,7 +83,7 @@ i32 main()
   {
     [0] = mat_1.id,
     [1] = mat_2.id,
-    [2] = mat_out.id
+    [2] = fbo_color.id
   };
   
   glBindTextures(0, 16, state_textures);
@@ -100,7 +100,7 @@ i32 main()
   u32 pixels_bytes = dim_x * dim_y * sizeof(vec4);
   vec4 * pixels = SDL_malloc(pixels_bytes);
   
-  gfTextureGetPixels(mat_out.id, 0, 0, 0, dim_x, dim_y, GL_RGBA, GL_FLOAT, pixels_bytes, pixels);
+  gfTextureGetPixels(fbo_color.id, 0, 0, 0, dim_x, dim_y, GL_RGBA, GL_FLOAT, pixels_bytes, pixels);
   
   char print_str[10000] = {0};
   SDL_snprintf(print_str, 10000, "pixels[%d].rgba: %f %f %f %f\n", dim_x * dim_y - 1,

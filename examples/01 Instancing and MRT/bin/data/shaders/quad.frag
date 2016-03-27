@@ -30,14 +30,15 @@ vec3 ScreenSpaceDither(vec2 vScreenPos)
   return vDither.rgb / 255.0;
 }
 
-layout(binding = 10) uniform sampler2DArray in_fbo_color;
+layout(binding = 10) uniform sampler2DArray s_fbo_color;
 
-smooth in vec2 vs_uv;
+layout(location = 0) smooth in vec2 uv;
+
 out vec4 color;
 
 void main()
 {
-  color = texture(in_fbo_color, vec3(vs_uv, 0));
+  color = texture(s_fbo_color, vec3(uv, 0));
   
   color += vec4(ScreenSpaceDither(gl_FragCoord.xy), 0);
 }

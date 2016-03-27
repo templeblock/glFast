@@ -8,13 +8,13 @@
 #extension GL_ARB_explicit_uniform_location : enable
 layout(depth_unchanged) out float gl_FragDepth;
 
-layout(binding = 9) uniform samplerCubeArray in_cubemaps;
+layout(binding = 9) uniform samplerCubeArray s_cubemaps;
 
-smooth in vec3 vs_position;
+layout(location = 0) smooth in vec3 pos;
 
-out vec4 fs_color;
+out vec4 color;
 
 void main()
 {
-  fs_color = texture(in_cubemaps, vec4(vs_position, 0));
+  color = texture(s_cubemaps, vec4(pos, 0));
 }

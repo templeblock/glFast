@@ -33,11 +33,11 @@ i32 main()
   
   const char * vs_str = GF_VERT_HEAD GF_TO_STRING
   (
-    layout(binding = 0) uniform samplerBuffer in_pos;
+    layout(binding = 0) uniform samplerBuffer s_pos;
     
     void main()
     {
-      vec3 pos = texelFetch(in_pos, gl_VertexID).xyz;
+      vec3 pos = texelFetch(s_pos, gl_VertexID).xyz;
       gl_Position = vec4(pos, 1.f);
     }
   );

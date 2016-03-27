@@ -24,23 +24,23 @@ vec3 IntToColor(int i)
   return color;
 }
 
-layout(binding = 8) uniform sampler2DArray   in_textures;
-layout(binding = 9) uniform samplerCubeArray in_cubemaps;
+layout(binding = 8) uniform sampler2DArray   s_textures;
+layout(binding = 9) uniform samplerCubeArray s_cubemaps;
 
 layout(location = 0) uniform vec3 cam_pos;
-layout(location = 1) uniform int show_pass;
-
-layout(location = 0) out vec4 fbo_color;
+layout(location = 1) uniform int  show_pass;
 
 layout(location = 0) flat   in int  id;
 layout(location = 1) smooth in vec2 uv;
 layout(location = 2) smooth in vec3 nor;
 layout(location = 3) smooth in vec3 pos;
 
+layout(location = 0) out vec4 fbo_color;
+
 void main()
 {
-  vec4 diffuse = texture(in_textures, vec3(uv, id));
-  vec4 reflect = texture(in_cubemaps, vec4(reflect((pos - cam_pos), nor), 0));
+  vec4 diffuse = texture(s_textures, vec3(uv, id));
+  vec4 reflect = texture(s_cubemaps, vec4(reflect((pos - cam_pos), nor), 0));
   vec4 colours = vec4(0);
   
   colours += vec4(1.0, 0.0, 0.0, 1.0) * when_eq(vec4(id), vec4(0));

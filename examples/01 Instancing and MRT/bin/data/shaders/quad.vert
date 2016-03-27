@@ -5,7 +5,7 @@
 #extension GL_ARB_explicit_uniform_location : enable
 out gl_PerVertex { vec4 gl_Position; };
 
-const vec2 pos[] = vec2[]
+const vec2 quad[] = vec2[]
 (
   vec2( -1.0, -1.0 ),
   vec2(  1.0, -1.0 ),
@@ -15,7 +15,7 @@ const vec2 pos[] = vec2[]
   vec2(  1.0,  1.0 )
 );
 
-const vec2 uv[] = vec2[]
+const vec2 quad_uv[] = vec2[]
 (
   vec2(  0.0,  0.0 ),
   vec2(  1.0,  0.0 ),
@@ -25,10 +25,10 @@ const vec2 uv[] = vec2[]
   vec2(  1.0,  1.0 )
 );
 
-smooth out vec2 vs_uv;
+layout(location = 0) smooth out vec2 uv;
 
 void main()
 {
-  gl_Position = vec4(pos[gl_VertexID], 0, 1);
-  vs_uv = uv[gl_VertexID];
+  uv = quad_uv[gl_VertexID];
+  gl_Position = vec4(quad[gl_VertexID], 0, 1);
 }
