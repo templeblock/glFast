@@ -1,5 +1,6 @@
 #version 330
 #extension GL_ARB_shader_precision          : enable
+#extension GL_ARB_separate_shader_objects   : enable
 #extension GL_ARB_shading_language_420pack  : enable
 #extension GL_ARB_explicit_uniform_location : enable
 out gl_PerVertex { vec4 gl_Position; };
@@ -34,29 +35,28 @@ layout(binding = 5) uniform  samplerBuffer in_nor;
 layout(binding = 6) uniform isamplerBuffer in_ins_first;
 layout(binding = 7) uniform  samplerBuffer in_ins_pos;
 
-smooth out vec4 vs_iuv;
-smooth out vec4 vs_nor;
-smooth out vec4 vs_pos;
+layout(location = 0) flat   out int  id;
+layout(location = 1) smooth out vec2 uv;
+layout(location = 2) smooth out vec3 nor;
+layout(location = 3) smooth out vec3 pos;
 
 void main()
 {
-  int   mesh_id    = texelFetch(in_mesh_id, gl_VertexID).x;
-  ivec3 attr_first = texelFetch(in_attr_first,  mesh_id).xyz;
+  id = texelFetch(in_mesh_id, gl_VertexID).x;
+  
+  ivec3 attr_first = texelFetch(in_attr_first, id).xyz;
   ivec3 attr_id    = texelFetch(in_attr_id, gl_VertexID).xyz;
   
-  vec3 pos = texelFetch(in_pos, attr_first.x + attr_id.x).xyz;
-  vec2 uv  = texelFetch(in_uv,  attr_first.y + attr_id.y).xy;
-  vec3 nor = texelFetch(in_nor, attr_first.z + attr_id.z).xyz;
+  pos = texelFetch(in_pos, attr_first.x + attr_id.x).xyz;
+  uv  = texelFetch(in_uv,  attr_first.y + attr_id.y).xy;
+  nor = texelFetch(in_nor, attr_first.z + attr_id.z).xyz;
   
-  int  ins_first = texelFetch(in_ins_first, mesh_id).x;
+  int  ins_first = texelFetch(in_ins_first, id).x;
   vec3 ins_pos   = texelFetch(in_ins_pos, ins_first + gl_InstanceID).xyz;
   
-  vs_iuv = vec4(mesh_id, uv, 0);
-  vs_nor = vec4(nor, 0);
-  vs_pos = vec4(pos + ins_pos, 0);
+  pos += ins_pos;
   
   vec3 mv = pos;
-  mv += ins_pos;
   mv -= cam_pos;
   mv  = qrot(mv, qconj(cam_rot));
   gl_Position = proj(mv, cam_prj);

@@ -274,6 +274,7 @@ void (*glProgramUniform4fv)(u32 program, i32 location, i32 count, const f32 * va
 #define GF_VERT_HEAD \
   "#version 330\n" \
   "#extension GL_ARB_shader_precision          : enable\n" \
+  "#extension GL_ARB_separate_shader_objects   : enable\n" \
   "#extension GL_ARB_shading_language_420pack  : enable\n" \
   "#extension GL_ARB_explicit_uniform_location : enable\n" \
   "out gl_PerVertex { vec4 gl_Position; };\n"
@@ -283,6 +284,7 @@ void (*glProgramUniform4fv)(u32 program, i32 location, i32 count, const f32 * va
   "#extension GL_ARB_shader_precision          : enable\n" \
   "#extension GL_ARB_conservative_depth        : enable\n" \
   "#extension GL_ARB_texture_cube_map_array    : enable\n" \
+  "#extension GL_ARB_separate_shader_objects   : enable\n" \
   "#extension GL_ARB_shading_language_420pack  : enable\n" \
   "#extension GL_ARB_shading_language_packing  : enable\n" \
   "#extension GL_ARB_explicit_uniform_location : enable\n" \

@@ -2,6 +2,7 @@
 #extension GL_ARB_shader_precision          : enable
 #extension GL_ARB_conservative_depth        : enable
 #extension GL_ARB_texture_cube_map_array    : enable
+#extension GL_ARB_separate_shader_objects   : enable
 #extension GL_ARB_shading_language_420pack  : enable
 #extension GL_ARB_shading_language_packing  : enable
 #extension GL_ARB_explicit_uniform_location : enable
@@ -31,17 +32,13 @@ layout(location = 1) uniform int show_pass;
 
 layout(location = 0) out vec4 fbo_color;
 
-smooth in vec4 vs_iuv;
-smooth in vec4 vs_nor;
-smooth in vec4 vs_pos;
+layout(location = 0) flat   in int  id;
+layout(location = 1) smooth in vec2 uv;
+layout(location = 2) smooth in vec3 nor;
+layout(location = 3) smooth in vec3 pos;
 
 void main()
 {
-  int  id  = int(vs_iuv.x);
-  vec2 uv  = vs_iuv.yz;
-  vec3 nor = vs_nor.xyz;
-  vec3 pos = vs_pos.xyz;
-
   vec4 diffuse = texture(in_textures, vec3(uv, id));
   vec4 reflect = texture(in_cubemaps, vec4(reflect((pos - cam_pos), nor), 0));
   vec4 colours = vec4(0);
