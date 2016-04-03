@@ -32,6 +32,10 @@
 extern "C" {
 #endif
 
+#if !defined(QFPC_SIN) || !defined(QFPC_COS) || !defined(QFPC_SQRT)
+#include <math.h>
+#endif
+
 #ifndef QFPC_SIN
 #define QFPC_SIN sin
 #endif
